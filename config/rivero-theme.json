@@ -1,0 +1,21 @@
+{
+  "name": "Rivero Green",
+  "base": "WinUtil",
+  "colors": {
+    "MainBackgroundColor": "#0B0F0C",
+    "MainForegroundColor": "#F3F4F6",
+    "SurfaceBackgroundColor": "#111813",
+    "BorderColor": "#26352A",
+    "ButtonBackgroundColor": "#17221A",
+    "ButtonForegroundColor": "#F3F4F6",
+    "LinkForegroundColor": "#86EFAC",
+    "LinkHoverForegroundColor": "#22C55E",
+    "ToggleButtonOnColor": "#22C55E",
+    "ButtonTweaksBackgroundColor": "#22C55E",
+    "ButtonTweaksForegroundColor": "#0B0F0C",
+    "ButtonInstallBackgroundColor": "#17221A",
+    "ButtonConfigBackgroundColor": "#17221A",
+    "ButtonUpdatesBackgroundColor": "#17221A"
+  },
+  "notes": "Rivero branding palette for the WinUtil WPF resource layer. Resource keys are mapped during the XAML port; this file alone does not alter the current WinForms prototype."
+}
