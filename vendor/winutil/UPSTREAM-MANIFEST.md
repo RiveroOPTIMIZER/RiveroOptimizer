@@ -1,45 +1,59 @@
 # WinUtil upstream integration manifest
 
-This project adapts the upstream WinUtil interface and workflows. It is not an official Chris Titus Tech release.
+Rivero Optimizer is an independent adaptation and is not an official Chris Titus Tech release.
 
-## Upstream source
+## Pinned upstream source
 
 - Project: https://github.com/ChrisTitusTech/winutil
-- Reviewed release: 26.11.13 (2026-11-13)
+- Snapshot commit: [70c23c80641d7370532af2f619b2842658600842](https://github.com/ChrisTitusTech/winutil/commit/70c23c80641d7370532af2f619b2842658600842)
 - License: MIT
-- Upstream copyright notice: Copyright (c) 2022 CT Tech Group LLC
-- Upstream license text: https://raw.githubusercontent.com/ChrisTitusTech/winutil/main/LICENSE
+- Copyright: Copyright (c) 2022 CT Tech Group LLC
+- Original license is retained at `vendor/winutil/upstream/LICENSE` and in `THIRD-PARTY-NOTICES.md`.
 
-Keep the upstream copyright and MIT permission notice with every copied substantial portion. Rivero-specific code must be identified separately. Do not imply endorsement by the upstream authors.
+## Vendored source snapshot
 
-## Required upstream areas
+The following original upstream files have been copied without Rivero branding edits so they can be reviewed and adapted against a fixed source revision:
 
-The upstream repository currently contains approximately 378 tracked paths under the main runtime areas. A complete port cannot be made by copying only the launcher and XAML.
-
-| Area | Upstream path | Purpose |
+| Local path | Upstream path | Purpose |
 |---|---|---|
-| Launcher and startup | `scripts/start.ps1` | Parameter handling, elevation, shared state and startup |
-| Main orchestration | `scripts/main.ps1` | UI thread, runspaces, headless operation and shutdown |
-| WPF interface | `xaml/inputXML.xaml` | Window, tabs, controls, styles and event wiring |
-| Core settings | `config/*.json` | Applications, tweaks, presets, features, DNS and themes |
-| Runtime functions | `functions/private/`, `functions/public/` | UI handlers, package actions, configuration and system operations |
-| App assets | `config/icons/` | Application catalog imagery |
+| `vendor/winutil/upstream/scripts/start.ps1` | `scripts/start.ps1` | Startup and parameter handling |
+| `vendor/winutil/upstream/scripts/main.ps1` | `scripts/main.ps1` | Main orchestration |
+| `vendor/winutil/upstream/xaml/inputXML.xaml` | `xaml/inputXML.xaml` | Original WPF interface |
+| `vendor/winutil/upstream/LICENSE` | `LICENSE` | Upstream MIT license |
 
-## Rivero adaptation rules
+These files are a source snapshot only. The runtime is **not yet complete or runnable**: WinUtil also depends on its configuration files, function libraries, assets, and other resources. Do not launch the vendored scripts directly from this partial snapshot.
 
-1. Preserve upstream WPF layout and behavior rather than replacing it with a newly invented WinForms interface.
-2. Apply Rivero's black/green palette through the upstream WPF resource keys.
-3. Translate user-facing labels, descriptions, tooltips and status messages into Spanish. Keep PowerShell identifiers, JSON keys and internal IDs stable unless every reference is updated together.
-4. Add a visible PC/LAPTOP selector. Auto-detection is a suggestion only; the user can override it.
-5. Keep a shared category structure while filtering each tweak by explicit device applicability.
-6. Review each tweak before enabling it. Do not import destructive or security-reducing actions as defaults.
-7. Preserve Windows Defender, Firewall, UAC, BitLocker, Secure Boot, Windows Update and OEM thermal controls.
-8. On laptops, preserve sleep, hibernation, battery saver and OEM power/thermal management. Do not force High Performance or disable wireless power saving.
-9. Never label a tweak reversible unless its undo path has been implemented and tested.
-10. Do not publish a runnable build until Windows PowerShell 5.1/WPF smoke tests and the PowerShell test suite pass.
+## Rivero product decisions
 
-## Current integration status
+- Product name: **Rivero Optimizer**.
+- Visual identity: black and green.
+- Interface language: Spanish.
+- Device scope: **desktop PC only**. Do not add a laptop selector, laptop profile, or laptop-specific options.
+- Main section: Rivero Optimizer, adapted from the WinUtil Tweaks workflow.
+- Separate section: Sophia Script, maintained as an independently credited component.
+- Information section: retain TikTok `davii.cf` and Discord `desgastarte`.
+- Do not add wallpaper browsing until the core optimizer is working.
 
-The repository currently contains Rivero-specific theme metadata, a laptop safety profile, a device-profile module and Pester tests. The original WinForms prototype is not the final interface and its placeholder buttons must not be represented as working system tweaks.
+## Adaptation and safety rules
 
-The upstream runtime has not yet been vendored or wired into Rivero. The release is therefore not ready for end-user testing.
+1. Preserve the recognizable WinUtil WPF layout and interaction model while applying Rivero branding and Spanish labels.
+2. Keep upstream identifiers and internal JSON keys stable unless every dependent reference is updated.
+3. Review every imported action before making it available. Do not enable destructive or security-reducing actions by default.
+4. Never disable Microsoft Defender, Firewall, UAC, BitLocker, Secure Boot, or Windows Update as an optimization.
+5. Do not force high-performance power plans or alter OEM thermal protections.
+6. Never label a change reversible unless its restore path is implemented and tested.
+7. Preserve the MIT copyright and permission notices with copied substantial portions. Clearly distinguish Rivero-authored modifications from upstream code.
+8. Do not publish a runnable build until dependency review, PowerShell tests, and Windows PowerShell 5.1/WPF smoke tests pass.
+
+## Current status
+
+- [x] Pin a specific upstream commit.
+- [x] Vendor the original launcher, main orchestration script, WPF XAML, and MIT license as a reviewable source snapshot.
+- [x] Keep Sophia Script and Information as separate UI sections in the Rivero preview.
+- [ ] Vendor and audit the complete set of runtime dependencies.
+- [ ] Adapt the upstream WPF XAML to Rivero's black/green theme and Spanish labels.
+- [ ] Connect only reviewed PC-safe actions to the UI.
+- [ ] Integrate Sophia Script separately with its own dependency and action review.
+- [ ] Run automated tests and Windows PowerShell 5.1/WPF smoke tests.
+
+The existing `RiveroOptimizer-WPF-Preview.ps1` remains a development preview. The vendored upstream snapshot is not wired into it yet.
