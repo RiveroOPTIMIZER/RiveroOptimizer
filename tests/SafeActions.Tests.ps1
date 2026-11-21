@@ -7,11 +7,11 @@ Describe 'Rivero safe action dispatcher' {
         { Invoke-RiveroTweak -Id 'RUN-ARBITRARY-CODE' -Mode PC } | Should -Throw
     }
 
-    It 'rejects laptop-only actions in PC mode' {
+    It 'rejects laptop-only actions' {
         { Invoke-RiveroTweak -Id 'LAPTOP-BATTERY-GUIDE' -Mode PC } | Should -Throw
     }
 
-    It 'rejects PC-only actions in laptop mode' {
+    It 'accepts only the PC device profile' {
         { Invoke-RiveroTweak -Id 'PC-POWER-GUIDE' -Mode LAPTOP } | Should -Throw
     }
 
