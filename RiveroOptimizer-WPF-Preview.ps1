@@ -52,10 +52,10 @@ Add-Type -AssemblyName WindowsBase
     </Border>
     <Border DockPanel.Dock="Bottom" Background="#111813" Padding="8">
       <DockPanel>
-        <TextBlock x:Name="StatusText" Text="Vista previa: no se aplican cambios en Windows."
+        <TextBlock x:Name="StatusText" Text="Diagnósticos y guías seguras; no se modifican ajustes de Windows."
                    Foreground="#86EFAC" VerticalAlignment="Center"/>
         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-          <Button x:Name="RunButton" Content="Ejecutar ajustes" Width="180"/>
+          <Button x:Name="RunButton" Content="Ejecutar seleccionados" Width="180"/>
           <Button x:Name="UndoButton" Content="Deshacer ajustes seleccionados" Width="225"/>
         </StackPanel>
       </DockPanel>
@@ -82,7 +82,10 @@ Add-Type -AssemblyName WindowsBase
                 <CheckBox Content="Activar clic derecho para finalizar tareas" Tag="BOTH"/>
                 <CheckBox Content="Desactivar descubrimiento automático de carpetas" Tag="BOTH"/>
                 <CheckBox Content="Revisar aplicaciones de inicio" Tag="BOTH"/>
-                <CheckBox Content="Crear punto de restauración" Tag="BOTH"/>
+                <CheckBox Content="Información de Windows" Name="TweakOsInfo" Tag="BOTH" IsChecked="True"/>
+                <CheckBox Content="Información del hardware" Name="TweakHardwareInfo" Tag="BOTH" IsChecked="True"/>
+                <CheckBox Content="Estado de energía" Name="TweakPowerInfo" Tag="BOTH" IsChecked="True"/>
+                <CheckBox Content="Crear punto de restauración" Tag="BOTH" IsEnabled="False"/>
                 <CheckBox Content="Revisar servicios configurados manualmente" Tag="BOTH"/>
                 <CheckBox Content="Eliminar archivos temporales" Tag="BOTH"/>
                 <CheckBox Content="Revisar Widgets" Tag="BOTH"/>
@@ -107,6 +110,10 @@ Add-Type -AssemblyName WindowsBase
                 <CheckBox Content="Mostrar pantalla de inicio detallada" Tag="BOTH"/>
                 <CheckBox Content="Aceleración del mouse" Tag="BOTH"/>
                 <CheckBox Content="Bloqueo numérico al iniciar" Tag="BOTH"/>
+                <CheckBox Content="Recomendaciones de batería" Name="TweakBatteryGuide" Tag="LAPTOP"/>
+                <CheckBox Content="Protección térmica del portátil" Name="TweakThermalGuide" Tag="LAPTOP" IsChecked="True"/>
+                <CheckBox Content="Revisar plan de energía del PC" Name="TweakPcPowerGuide" Tag="PC"/>
+                <CheckBox Content="Conservar protecciones de Windows" Name="TweakSecurityGuide" Tag="BOTH" IsChecked="True"/>
                 <CheckBox Content="Mostrar porcentaje de batería" Tag="LAPTOP"/>
                 <CheckBox Content="Conservar suspensión e hibernación" IsChecked="True" IsEnabled="False" Tag="LAPTOP"/>
                 <CheckBox Content="Conservar ahorro de batería y límites térmicos" IsChecked="True" IsEnabled="False" Tag="LAPTOP"/>
@@ -139,8 +146,47 @@ $undo = $window.FindName('UndoButton')
 $status = $window.FindName('StatusText')
 $mode = $window.FindName('DeviceMode')
 $search = $window.FindName('SearchBox')
-$run.Add_Click({ [System.Windows.MessageBox]::Show('Esta vista previa solo muestra la interfaz. Todavía no aplica ajustes.','Rivero Optimizer') | Out-Null })
-$undo.Add_Click({ [System.Windows.MessageBox]::Show('No hay cambios que revertir en esta vista previa.','Rivero Optimizer') | Out-Null })
+$modulePath = Join-Path $PSScriptRoot 'Modules/SafeActions.ps1'
+if (-not (Test-Path -LiteralPath $modulePath -PathType Leaf)) {
+  throw "No se encontró el módulo seguro: $modulePath"
+}
+. $modulePath
+$undo.IsEnabled = $false
+$undo.Content = 'Sin cambios para deshacer'
+$run.Add_Click({
+  try {
+    $selectedMode = if ([string]$mode.SelectedItem.Content -eq 'Laptop') { 'LAPTOP' } else { 'PC' }
+    $actionMap = @{
+      TweakOsInfo = 'SYS-OS-INFO'
+      TweakHardwareInfo = 'SYS-HARDWARE-INFO'
+      TweakPowerInfo = 'SYS-POWER-STATUS'
+      TweakBatteryGuide = 'LAPTOP-BATTERY-GUIDE'
+      TweakThermalGuide = 'LAPTOP-THERMAL-GUIDE'
+      TweakPcPowerGuide = 'PC-POWER-GUIDE'
+      TweakSecurityGuide = 'SECURITY-PRESERVE'
+    }
+    $output = New-Object System.Collections.Generic.List[string]
+    foreach ($entry in $actionMap.GetEnumerator()) {
+      $control = $window.FindName($entry.Key)
+      if ($control -and $control.IsChecked -and $control.Visibility -eq 'Visible') {
+        $result = Invoke-RiveroTweak -Id $entry.Value -Mode $selectedMode
+        $output.Add("[$($result.Status)] $($result.Title)")
+        foreach ($line in $result.Details) { $output.Add("  • $line") }
+        $output.Add('')
+      }
+    }
+    if ($output.Count -eq 0) { $output.Add('Selecciona al menos un diagnóstico o una guía disponible para este dispositivo.') }
+    [System.Windows.MessageBox]::Show(($output -join [Environment]::NewLine), 'Rivero Optimizer') | Out-Null
+    $status.Text = "Listo: se ejecutaron diagnósticos/guías para $selectedMode. No se modificó Windows."
+  }
+  catch {
+    [System.Windows.MessageBox]::Show($_.Exception.Message, 'Rivero Optimizer - Error') | Out-Null
+    $status.Text = 'Ocurrió un error. No se aplicaron cambios.'
+  }
+})
+$undo.Add_Click({
+  [System.Windows.MessageBox]::Show('Esta versión solo ejecuta diagnósticos y guías manuales. No hay cambios del sistema que revertir.', 'Rivero Optimizer') | Out-Null
+})
 function Get-VisualChildren([System.Windows.DependencyObject]$Parent) {
   if ($null -eq $Parent) { return }
   for ($i = 0; $i -lt [System.Windows.Media.VisualTreeHelper]::GetChildrenCount($Parent); $i++) {
