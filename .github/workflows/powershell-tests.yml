@@ -1,0 +1,31 @@
+name: Rivero PowerShell checks
+
+on:
+  push:
+    branches:
+      - main
+      - rivero/**
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Pester
+        shell: pwsh
+        run: |
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+          Install-Module Pester -MinimumVersion 5.5.0 -Scope CurrentUser -Force
+
+      - name: Run device profile tests
+        shell: pwsh
+        run: |
+          Invoke-Pester -Path ./tests/DeviceProfile.Tests.ps1 -CI
