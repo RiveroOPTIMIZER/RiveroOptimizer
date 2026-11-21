@@ -1,4 +1,4 @@
-# Rivero Optimizer - WPF UI preview
+﻿# Rivero Optimizer - WPF UI preview
 # Windows PowerShell 5.1+. UI-only: no Windows settings are changed.
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName PresentationFramework
@@ -39,7 +39,7 @@ Add-Type -AssemblyName WindowsBase
         <TextBlock Text="◆" Foreground="#22C55E" FontSize="28" VerticalAlignment="Center" Margin="5,0,18,0"/>
         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
           <Button Content="Ajustes" Width="105" Background="#22C55E"/>
-          <Button Content="Configuración" Width="125"/>
+          <Button Content="Información" Width="125"/>
         </StackPanel>
         <TextBox x:Name="SearchBox" Grid.Column="2" Width="230" Height="27" Margin="10,0"
                  VerticalContentAlignment="Center" Background="#0B0F0C" Foreground="#F3F4F6"
@@ -79,7 +79,7 @@ Add-Type -AssemblyName WindowsBase
                 <CheckBox Content="Ejecutar limpieza de disco" Tag="BOTH"/>
                 <CheckBox Content="Activar clic derecho para finalizar tareas" Tag="BOTH"/>
                 <CheckBox Content="Desactivar descubrimiento automático de carpetas" Tag="BOTH"/>
-                <CheckBox Content="Revisar aplicaciones de inicio" Tag="BOTH"/>
+                <CheckBox Content="Analizar programas de inicio" Name="TweakStartupAudit" Tag="BOTH"/>
                 <CheckBox Content="Información de Windows" Name="TweakOsInfo" Tag="BOTH" IsChecked="True"/>
                 <CheckBox Content="Información del hardware" Name="TweakHardwareInfo" Tag="BOTH" IsChecked="True"/>
                 <CheckBox Content="Estado de energía" Name="TweakPowerInfo" Tag="BOTH" IsChecked="True"/>
@@ -117,9 +117,9 @@ Add-Type -AssemblyName WindowsBase
           </Grid>
         </Grid>
       </TabItem>
-      <TabItem Header="Configuración">
+      <TabItem Header="Información">
         <StackPanel Margin="24" Background="#111813">
-          <TextBlock Text="Configuración de Rivero Optimizer" Foreground="#86EFAC" FontSize="18" Margin="12,12"/>
+          <TextBlock Text="Información de Rivero Optimizer" Foreground="#86EFAC" FontSize="18" Margin="12,12"/>
           <TextBlock Text="Información y contacto" Foreground="#86EFAC" FontSize="15" Margin="12,8"/>
           <TextBlock Text="TikTok: davii.cf" FontSize="17" Margin="12,6"/>
           <TextBlock Text="Discord: desgastarte" FontSize="17" Margin="12,6"/>
@@ -156,6 +156,7 @@ $run.Add_Click({
       TweakOsInfo = 'SYS-OS-INFO'
       TweakHardwareInfo = 'SYS-HARDWARE-INFO'
       TweakPowerInfo = 'SYS-POWER-STATUS'
+      TweakStartupAudit = 'PC-STARTUP-AUDIT'
       TweakPcPowerGuide = 'PC-POWER-GUIDE'
       TweakSecurityGuide = 'SECURITY-PRESERVE'
     }
@@ -211,6 +212,7 @@ $supportedControlNames = @(
   'TweakOsInfo',
   'TweakHardwareInfo',
   'TweakPowerInfo',
+  'TweakStartupAudit',
   'TweakPcPowerGuide',
   'TweakSecurityGuide'
 )
