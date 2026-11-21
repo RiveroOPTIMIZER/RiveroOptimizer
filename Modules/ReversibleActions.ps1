@@ -65,6 +65,22 @@ function Invoke-RiveroReversibleTweak {
         }
     }
     catch {
+        # Best-effort rollback if one of the two registry writes fails.
+        foreach ($entry in $values) {
+            if ($entry.Existed) {
+                if (-not (Test-Path -LiteralPath $registryPath)) {
+                    New-Item -Path $registryPath -Force | Out-Null
+                }
+                New-ItemProperty -LiteralPath $registryPath -Name $entry.Name -PropertyType DWord -Value ([int]$entry.Value) -Force -ErrorAction SilentlyContinue | Out-Null
+            }
+            elseif (Test-Path -LiteralPath $registryPath) {
+                Remove-ItemProperty -LiteralPath $registryPath -Name $entry.Name -ErrorAction SilentlyContinue
+            }
+        }
+        if (-not $keyExists -and (Test-Path -LiteralPath $registryPath)) {
+            $remaining = (Get-ItemProperty -LiteralPath $registryPath).PSObject.Properties | Where-Object { $_.Name -notlike 'PS*' }
+            if (@($remaining).Count -eq 0) { Remove-Item -LiteralPath $registryPath -Force -ErrorAction SilentlyContinue }
+        }
         Remove-Item -LiteralPath $backupPath -Force -ErrorAction SilentlyContinue
         throw
     }
@@ -90,8 +106,14 @@ function Undo-RiveroReversibleTweak {
     }
 
     $backup = Get-Content -LiteralPath $backupPath -Raw | ConvertFrom-Json -ErrorAction Stop
+    $allowedNames = @('AutoGameModeEnabled', 'AllowAutoGameMode')
     if ($backup.Id -ne $Id -or $backup.RegistryPath -ne 'HKCU:\Software\Microsoft\GameBar') {
         throw 'La copia de seguridad no coincide con el ajuste permitido.'
+    }
+    foreach ($entry in @($backup.Values)) {
+        if ($entry.Name -notin $allowedNames) {
+            throw 'La copia contiene un valor de registro no permitido.'
+        }
     }
 
     if ($PSCmdlet.ShouldProcess('Configuración del usuario actual', 'Restaurar estado anterior del Modo Juego')) {
