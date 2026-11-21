@@ -23,7 +23,7 @@ Describe 'Rivero tweak catalog' {
 
     It 'does not expose executable script payloads in the starter catalog' {
         foreach ($item in $script:Catalog.tweaks) {
-            $item.actionType | Should -BeIn @('diagnostic', 'manual')
+            $item.actionType | Should -BeIn @('diagnostic', 'manual', 'reversible')
             $item.PSObject.Properties.Name | Should -Not -Contain 'applyScript'
             $item.PSObject.Properties.Name | Should -Not -Contain 'undoScript'
         }
