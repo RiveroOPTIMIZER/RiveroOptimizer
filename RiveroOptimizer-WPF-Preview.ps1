@@ -149,8 +149,9 @@ foreach ($requiredPath in @($modulePath, $catalogModulePath, $reversibleModulePa
 . $catalogModulePath
 . $reversibleModulePath
 $catalog = Import-RiveroTweakCatalog -Path $catalogPath
-$undo.IsEnabled = $false
-$undo.Content = 'Sin cambios para deshacer'
+$existingGameModeBackup = Get-RiveroGameModeBackupPath
+$undo.IsEnabled = Test-Path -LiteralPath $existingGameModeBackup -PathType Leaf
+$undo.Content = if ($undo.IsEnabled) { 'Deshacer Modo Juego' } else { 'Sin cambios para deshacer' }
 $run.Add_Click({
   try {
     $selectedMode = 'PC'
@@ -172,6 +173,8 @@ $run.Add_Click({
         [System.Windows.MessageBoxImage]::Question
       )
       if ($answer -eq [System.Windows.MessageBoxResult]::Yes) {
+        $gameCatalogItem = Get-RiveroTweakById -Id 'PC-GAME-MODE' -Catalog $catalog
+        if ($null -eq $gameCatalogItem -or $gameCatalogItem.actionType -ne 'reversible') { throw 'La acción Modo Juego no está validada en el catálogo.' }
         $gameResult = Invoke-RiveroReversibleTweak -Id 'PC-GAME-MODE' -Confirm:$false
         $output.Add("[$($gameResult.Status)] Activar Modo Juego de Windows")
         foreach ($line in $gameResult.Details) { $output.Add("  • $line") }
