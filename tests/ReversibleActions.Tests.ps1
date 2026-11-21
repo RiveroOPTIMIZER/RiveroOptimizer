@@ -11,7 +11,7 @@ Describe 'Rivero reversible action allow-list' {
         { Invoke-RiveroReversibleTweak -Id 'PC-FILE-EXTENSIONS' -Confirm:$false } | Should -Throw
     }
 
-    It 'rejects unknown file extension undo requests' {
+    It 'refuses to restore file extensions without a backup' {
         { Undo-RiveroFileExtensionsTweak -Confirm:$false -WhatIf } | Should -Throw
     }
 
