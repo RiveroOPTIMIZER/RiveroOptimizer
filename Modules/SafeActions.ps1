@@ -54,7 +54,7 @@ function Invoke-RiveroTweak {
             if ($items.Count -eq 0) { $items.Add('No se encontraron entradas en las claves Run consultadas.') }
             return [pscustomobject]@{
                 Id = $Id; Status = 'OK'; Title = 'Análisis de programas de inicio'
-                Details = @($items)
+                Details = $items.ToArray()
             }
         }
         'PC-POWER-GUIDE' {
