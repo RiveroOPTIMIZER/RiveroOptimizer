@@ -15,6 +15,12 @@ Describe 'Rivero safe action dispatcher' {
         { Invoke-RiveroTweak -Id 'PC-POWER-GUIDE' -Mode LAPTOP } | Should -Throw
     }
 
+    It 'runs the read-only startup audit' {
+        $result = Invoke-RiveroTweak -Id 'PC-STARTUP-AUDIT' -Mode PC
+        $result.Status | Should -Be 'OK'
+        $result.Title | Should -Be 'Análisis de programas de inicio'
+    }
+
     It 'returns manual guidance for protected security settings' {
         $result = Invoke-RiveroTweak -Id 'SECURITY-PRESERVE' -Mode PC
         $result.Status | Should -Be 'MANUAL'
