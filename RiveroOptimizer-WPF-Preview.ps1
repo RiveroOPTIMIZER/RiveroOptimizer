@@ -99,7 +99,7 @@ Add-Type -AssemblyName WindowsBase
               <StackPanel Background="#111813" Margin="5,0,0,0">
                 <TextBlock Text="Personalizar preferencias" Foreground="#86EFAC" FontFamily="Consolas" FontSize="15" Margin="10,8"/>
                 <CheckBox Content="Modo oscuro de Windows" IsChecked="True" Tag="BOTH"/>
-                <CheckBox Content="Mostrar extensiones de archivo" IsChecked="True" Tag="BOTH"/>
+                <CheckBox Content="Mostrar extensiones de archivo (reversible)" Name="TweakFileExtensions" Tag="BOTH"/>
                 <CheckBox Content="Mostrar archivos ocultos" IsChecked="True" Tag="BOTH"/>
                 <CheckBox Content="Activar Modo Juego de Windows (reversible)" Name="TweakGameMode" IsChecked="False" Tag="BOTH"/>
                 <CheckBox Content="Revisar plan de energía de escritorio" Tag="PC"/>
@@ -150,8 +150,9 @@ foreach ($requiredPath in @($modulePath, $catalogModulePath, $reversibleModulePa
 . $reversibleModulePath
 $catalog = Import-RiveroTweakCatalog -Path $catalogPath
 $existingGameModeBackup = Get-RiveroGameModeBackupPath
-$undo.IsEnabled = Test-Path -LiteralPath $existingGameModeBackup -PathType Leaf
-$undo.Content = if ($undo.IsEnabled) { 'Deshacer Modo Juego' } else { 'Sin cambios para deshacer' }
+$existingExtensionsBackup = Get-RiveroFileExtensionsBackupPath
+$undo.IsEnabled = (Test-Path -LiteralPath $existingGameModeBackup -PathType Leaf) -or (Test-Path -LiteralPath $existingExtensionsBackup -PathType Leaf)
+$undo.Content = if ($undo.IsEnabled) { 'Deshacer cambios' } else { 'Sin cambios para deshacer' }
 $run.Add_Click({
   try {
     $selectedMode = 'PC'
@@ -164,6 +165,25 @@ $run.Add_Click({
       TweakSecurityGuide = 'SECURITY-PRESERVE'
     }
     $output = New-Object System.Collections.Generic.List[string]
+    $extensionsControl = $window.FindName('TweakFileExtensions')
+    if ($extensionsControl.IsChecked) {
+      $answer = [System.Windows.MessageBox]::Show(
+        'Se mostrarán las extensiones de archivo para tu usuario. Rivero guardará el valor anterior para poder deshacerlo. ¿Continuar?',
+        'Confirmar personalización',
+        [System.Windows.MessageBoxButton]::YesNo,
+        [System.Windows.MessageBoxImage]::Question
+      )
+      if ($answer -eq [System.Windows.MessageBoxResult]::Yes) {
+        $extensionsCatalogItem = Get-RiveroTweakById -Id 'PC-FILE-EXTENSIONS' -Catalog $catalog
+        if ($null -eq $extensionsCatalogItem -or $extensionsCatalogItem.actionType -ne 'reversible') { throw 'La acción de extensiones no está validada en el catálogo.' }
+        $extensionsResult = Invoke-RiveroFileExtensionsTweak -Confirm:$false
+        $output.Add("[$($extensionsResult.Status)] Mostrar extensiones de archivo")
+        foreach ($line in $extensionsResult.Details) { $output.Add("  • $line") }
+        $extensionsControl.IsChecked = $false
+        $undo.IsEnabled = $true
+        $undo.Content = 'Deshacer cambios'
+      }
+    }
     $gameModeControl = $window.FindName('TweakGameMode')
     if ($gameModeControl.IsChecked) {
       $answer = [System.Windows.MessageBox]::Show(
@@ -180,7 +200,7 @@ $run.Add_Click({
         foreach ($line in $gameResult.Details) { $output.Add("  • $line") }
         $gameModeControl.IsChecked = $false
         $undo.IsEnabled = $true
-        $undo.Content = 'Deshacer Modo Juego'
+        $undo.Content = 'Deshacer cambios'
       }
     }
     foreach ($entry in $actionMap.GetEnumerator()) {
@@ -205,18 +225,29 @@ $run.Add_Click({
 })
 $undo.Add_Click({
   try {
-    $backupPath = Get-RiveroGameModeBackupPath
-    if (-not (Test-Path -LiteralPath $backupPath -PathType Leaf)) {
+    $gameBackupPath = Get-RiveroGameModeBackupPath
+    $extensionsBackupPath = Get-RiveroFileExtensionsBackupPath
+    $hasGameBackup = Test-Path -LiteralPath $gameBackupPath -PathType Leaf
+    $hasExtensionsBackup = Test-Path -LiteralPath $extensionsBackupPath -PathType Leaf
+    if (-not ($hasGameBackup -or $hasExtensionsBackup)) {
       [System.Windows.MessageBox]::Show('No hay cambios reversibles de Rivero para deshacer.', 'Rivero Optimizer') | Out-Null
       return
     }
-    $answer = [System.Windows.MessageBox]::Show('Se restaurará la configuración anterior del Modo Juego. ¿Continuar?', 'Confirmar deshacer', [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
+    $answer = [System.Windows.MessageBox]::Show('Se restaurarán los ajustes reversibles que Rivero haya aplicado (Modo Juego y/o extensiones). ¿Continuar?', 'Confirmar deshacer', [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
     if ($answer -eq [System.Windows.MessageBoxResult]::Yes) {
-      $result = Undo-RiveroReversibleTweak -Id 'PC-GAME-MODE' -Confirm:$false
-      [System.Windows.MessageBox]::Show(($result.Details -join [Environment]::NewLine), 'Rivero Optimizer') | Out-Null
+      $undoDetails = New-Object System.Collections.Generic.List[string]
+      if ($hasGameBackup) {
+        $result = Undo-RiveroReversibleTweak -Id 'PC-GAME-MODE' -Confirm:$false
+        foreach ($line in $result.Details) { $undoDetails.Add($line) }
+      }
+      if ($hasExtensionsBackup) {
+        $result = Undo-RiveroFileExtensionsTweak -Confirm:$false
+        foreach ($line in $result.Details) { $undoDetails.Add($line) }
+      }
+      [System.Windows.MessageBox]::Show(($undoDetails -join [Environment]::NewLine), 'Rivero Optimizer') | Out-Null
       $undo.IsEnabled = $false
       $undo.Content = 'Sin cambios para deshacer'
-      $status.Text = 'Se restauró el estado anterior del Modo Juego.'
+      $status.Text = 'Se restauraron los ajustes reversibles seleccionados.'
     }
   }
   catch {
@@ -253,6 +284,7 @@ $supportedControlNames = @(
   'TweakPowerInfo',
   'TweakStartupAudit',
   'TweakGameMode',
+  'TweakFileExtensions',
   'TweakPcPowerGuide',
   'TweakSecurityGuide'
 )
