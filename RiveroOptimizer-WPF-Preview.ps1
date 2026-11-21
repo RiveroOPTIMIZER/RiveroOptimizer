@@ -50,8 +50,12 @@ Add-Type -AssemblyName WindowsBase
     </Border>
     <Border DockPanel.Dock="Bottom" Background="#111813" Padding="8">
       <DockPanel>
-        <TextBlock x:Name="StatusText" Text="Perfil PC · Diagnósticos y guías seguras; Windows no se modifica."
-                   Foreground="#86EFAC" VerticalAlignment="Center"/>
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+          <TextBlock x:Name="StatusText" Text="Perfil PC · Diagnósticos y guías seguras; Windows no se modifica."
+                     Foreground="#86EFAC"/>
+          <TextBlock Text="Basado en Chris Titus Tech WinUtil · Sophia Script por farag2"
+                     Foreground="#9CA3AF" FontSize="10"/>
+        </StackPanel>
         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
           <Button x:Name="RunButton" Content="Ejecutar seleccionados" Width="180"/>
           <Button x:Name="UndoButton" Content="Deshacer ajustes seleccionados" Width="225"/>
@@ -59,7 +63,7 @@ Add-Type -AssemblyName WindowsBase
       </DockPanel>
     </Border>
     <TabControl Background="#0B0F0C" BorderBrush="#26352A" Margin="8">
-      <TabItem Header="Ajustes">
+      <TabItem Header="Rivero Optimizer">
         <Grid Margin="8">
           <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
           <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,4,0,10">
@@ -117,12 +121,47 @@ Add-Type -AssemblyName WindowsBase
           </Grid>
         </Grid>
       </TabItem>
+      <TabItem Header="Sophia Script">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <StackPanel Margin="24" Background="#111813">
+            <TextBlock Text="Sophia Script para Windows" Foreground="#86EFAC" FontSize="20" Margin="12,12"/>
+            <TextBlock Text="Módulo independiente · Autor: farag2 · Licencia MIT" Foreground="#D1D5DB" FontSize="12" Margin="12,2"/>
+            <TextBlock Text="Esta sección se está preparando como componente separado. No ejecuta scripts externos ni aplica cambios todavía." TextWrapping="Wrap" FontSize="14" Margin="12,12"/>
+            <TextBlock Text="Categorías previstas" Foreground="#86EFAC" FontSize="16" Margin="12,12,12,6"/>
+            <Border Background="#17221A" CornerRadius="5" Padding="12" Margin="8,4">
+              <StackPanel>
+                <TextBlock Text="Privacidad y seguridad" FontWeight="Bold"/>
+                <TextBlock Text="Revisión de opciones de privacidad sin desactivar protecciones de Windows." Foreground="#D1D5DB" TextWrapping="Wrap" Margin="0,4,0,0"/>
+              </StackPanel>
+            </Border>
+            <Border Background="#17221A" CornerRadius="5" Padding="12" Margin="8,4">
+              <StackPanel>
+                <TextBlock Text="Aplicaciones y componentes" FontWeight="Bold"/>
+                <TextBlock Text="Inventario y recomendaciones; no se desinstalarán componentes automáticamente." Foreground="#D1D5DB" TextWrapping="Wrap" Margin="0,4,0,0"/>
+              </StackPanel>
+            </Border>
+            <Border Background="#17221A" CornerRadius="5" Padding="12" Margin="8,4">
+              <StackPanel>
+                <TextBlock Text="Personalización de Windows" FontWeight="Bold"/>
+                <TextBlock Text="Preferencias visuales y de uso, con cambios reversibles cuando estén implementados." Foreground="#D1D5DB" TextWrapping="Wrap" Margin="0,4,0,0"/>
+              </StackPanel>
+            </Border>
+            <TextBlock Text="Créditos: Sophia Script for Windows — farag2" Foreground="#86EFAC" FontSize="12" Margin="12,18,12,4"/>
+            <TextBlock Text="https://github.com/farag2/Sophia-Script-for-Windows" Foreground="#9CA3AF" FontSize="11" Margin="12,0,12,12"/>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
       <TabItem Header="Información">
         <StackPanel Margin="24" Background="#111813">
-          <TextBlock Text="Información de Rivero Optimizer" Foreground="#86EFAC" FontSize="18" Margin="12,12"/>
-          <TextBlock Text="Información y contacto" Foreground="#86EFAC" FontSize="15" Margin="12,8"/>
+          <TextBlock Text="Información de Rivero Optimizer" Foreground="#86EFAC" FontSize="20" Margin="12,12"/>
+          <TextBlock Text="Proyecto y contacto" Foreground="#86EFAC" FontSize="15" Margin="12,8"/>
           <TextBlock Text="TikTok: davii.cf" FontSize="17" Margin="12,6"/>
           <TextBlock Text="Discord: desgastarte" FontSize="17" Margin="12,6"/>
+          <Separator Background="#26352A" Margin="12,16"/>
+          <TextBlock Text="Créditos y licencias" Foreground="#86EFAC" FontSize="15" Margin="12,8"/>
+          <TextBlock Text="Chris Titus Tech — WinUtil (MIT License)" FontSize="13" Margin="12,4"/>
+          <TextBlock Text="Sophia Script — farag2 (MIT License)" FontSize="13" Margin="12,4"/>
+          <TextBlock Text="Los avisos completos de terceros están en THIRD-PARTY-NOTICES.md." Foreground="#9CA3AF" TextWrapping="Wrap" FontSize="11" Margin="12,8"/>
         </StackPanel>
       </TabItem>
     </TabControl>
