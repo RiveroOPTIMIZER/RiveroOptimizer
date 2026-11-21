@@ -145,3 +145,108 @@ function Undo-RiveroReversibleTweak {
         Details = @('Se restauraron los valores anteriores del Modo Juego.')
     }
 }
+
+function Get-RiveroFileExtensionsBackupPath {
+    $directory = Join-Path $env:LOCALAPPDATA 'RiveroOptimizer\Backups'
+    if (-not (Test-Path -LiteralPath $directory)) {
+        New-Item -Path $directory -ItemType Directory -Force | Out-Null
+    }
+    Join-Path $directory 'file-extensions.json'
+}
+
+function Invoke-RiveroFileExtensionsTweak {
+    [CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='Low')]
+    param()
+
+    $registryPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
+    $valueName = 'HideFileExt'
+    $backupPath = Get-RiveroFileExtensionsBackupPath
+    if (Test-Path -LiteralPath $backupPath) {
+        throw 'Ya existe una copia de seguridad de las extensiones. Deshaz el cambio anterior primero.'
+    }
+
+    $keyExists = Test-Path -LiteralPath $registryPath
+    $existed = $false
+    $oldValue = $null
+    if ($keyExists) {
+        $key = Get-ItemProperty -LiteralPath $registryPath -ErrorAction Stop
+        $property = $key.PSObject.Properties[$valueName]
+        if ($null -ne $property) {
+            $existed = $true
+            $oldValue = [int]$property.Value
+        }
+    }
+
+    $backup = [pscustomobject]@{
+        Id = 'PC-FILE-EXTENSIONS'
+        RegistryPath = $registryPath
+        KeyExisted = $keyExists
+        ValueName = $valueName
+        Existed = $existed
+        Value = $oldValue
+        CreatedUtc = [DateTime]::UtcNow.ToString('o')
+    }
+    $backup | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $backupPath -Encoding UTF8
+
+    try {
+        if ($PSCmdlet.ShouldProcess('Explorador de archivos del usuario actual', 'Mostrar extensiones de archivo')) {
+            if (-not $keyExists) { New-Item -Path $registryPath -Force | Out-Null }
+            New-ItemProperty -LiteralPath $registryPath -Name $valueName -PropertyType DWord -Value 0 -Force -ErrorAction Stop | Out-Null
+        }
+        else {
+            Remove-Item -LiteralPath $backupPath -Force -ErrorAction SilentlyContinue
+            return [pscustomobject]@{ Id = 'PC-FILE-EXTENSIONS'; Status = 'WHATIF'; Details = @('No se modificó Windows.') }
+        }
+    }
+    catch {
+        if ($existed) {
+            New-ItemProperty -LiteralPath $registryPath -Name $valueName -PropertyType DWord -Value $oldValue -Force -ErrorAction SilentlyContinue | Out-Null
+        }
+        elseif (Test-Path -LiteralPath $registryPath) {
+            Remove-ItemProperty -LiteralPath $registryPath -Name $valueName -ErrorAction SilentlyContinue
+        }
+        Remove-Item -LiteralPath $backupPath -Force -ErrorAction SilentlyContinue
+        throw
+    }
+
+    [pscustomobject]@{
+        Id = 'PC-FILE-EXTENSIONS'
+        Status = 'APPLIED'
+        Details = @('Ahora se muestran las extensiones de archivo conocidas.', 'Se guardó una copia para deshacer el cambio.', 'Puede que debas actualizar la ventana del Explorador para verlo.')
+    }
+}
+
+function Undo-RiveroFileExtensionsTweak {
+    [CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='Low')]
+    param()
+
+    $backupPath = Get-RiveroFileExtensionsBackupPath
+    if (-not (Test-Path -LiteralPath $backupPath -PathType Leaf)) {
+        throw 'No existe una copia de seguridad de las extensiones de archivo.'
+    }
+    $backup = Get-Content -LiteralPath $backupPath -Raw | ConvertFrom-Json -ErrorAction Stop
+    if ($backup.Id -ne 'PC-FILE-EXTENSIONS' -or
+        $backup.RegistryPath -ne 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -or
+        $backup.ValueName -ne 'HideFileExt') {
+        throw 'La copia de seguridad de extensiones no coincide con el ajuste permitido.'
+    }
+
+    if ($PSCmdlet.ShouldProcess('Explorador de archivos del usuario actual', 'Restaurar visibilidad anterior de extensiones')) {
+        if ($backup.Existed) {
+            if (-not (Test-Path -LiteralPath $backup.RegistryPath)) {
+                New-Item -Path $backup.RegistryPath -Force | Out-Null
+            }
+            New-ItemProperty -LiteralPath $backup.RegistryPath -Name 'HideFileExt' -PropertyType DWord -Value ([int]$backup.Value) -Force -ErrorAction Stop | Out-Null
+        }
+        elseif (Test-Path -LiteralPath $backup.RegistryPath) {
+            Remove-ItemProperty -LiteralPath $backup.RegistryPath -Name 'HideFileExt' -ErrorAction SilentlyContinue
+        }
+        if (-not $backup.KeyExisted -and (Test-Path -LiteralPath $backup.RegistryPath)) {
+            $remaining = (Get-ItemProperty -LiteralPath $backup.RegistryPath).PSObject.Properties | Where-Object { $_.Name -notlike 'PS*' }
+            if (@($remaining).Count -eq 0) { Remove-Item -LiteralPath $backup.RegistryPath -Force }
+        }
+        Remove-Item -LiteralPath $backupPath -Force
+    }
+
+    [pscustomobject]@{ Id = 'PC-FILE-EXTENSIONS'; Status = 'UNDONE'; Details = @('Se restauró la visibilidad anterior de las extensiones.') }
+}
