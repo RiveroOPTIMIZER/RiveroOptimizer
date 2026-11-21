@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "catalogName": "Rivero Safe Starter Catalog",
+  "language": "es",
+  "note": "Catálogo inicial de diagnóstico y recomendaciones manuales. No ejecuta cambios del sistema.",
+  "tweaks": [
+    {
+      "id": "SYS-OS-INFO",
+      "name": "Información de Windows",
+      "category": "Diagnóstico",
+      "subcategory": "Sistema",
+      "description": "Muestra edición, versión y compilación de Windows.",
+      "devices": [
+        "BOTH"
+      ],
+      "risk": "low",
+      "actionType": "diagnostic",
+      "defaultSelected": true,
+      "requiresAdmin": false
+    },
+    {
+      "id": "SYS-HARDWARE-INFO",
+      "name": "Información del hardware",
+      "category": "Diagnóstico",
+      "subcategory": "Sistema",
+      "description": "Consulta procesador, memoria y adaptadores gráficos.",
+      "devices": [
+        "BOTH"
+      ],
+      "risk": "low",
+      "actionType": "diagnostic",
+      "defaultSelected": true,
+      "requiresAdmin": false
+    },
+    {
+      "id": "SYS-POWER-STATUS",
+      "name": "Estado de energía",
+      "category": "Diagnóstico",
+      "subcategory": "Energía",
+      "description": "Muestra el plan de energía activo y el estado de batería si existe.",
+      "devices": [
+        "BOTH"
+      ],
+      "risk": "low",
+      "actionType": "diagnostic",
+      "defaultSelected": true,
+      "requiresAdmin": false
+    },
+    {
+      "id": "LAPTOP-BATTERY-GUIDE",
+      "name": "Recomendaciones de batería",
+      "category": "Rendimiento",
+      "subcategory": "Energía",
+      "description": "Muestra recomendaciones para usar las opciones integradas de ahorro de batería; no cambia umbrales.",
+      "devices": [
+        "LAPTOP"
+      ],
+      "risk": "low",
+      "actionType": "manual",
+      "defaultSelected": false,
+      "requiresAdmin": false
+    },
+    {
+      "id": "LAPTOP-THERMAL-GUIDE",
+      "name": "Protección térmica del portátil",
+      "category": "Seguridad",
+      "subcategory": "Temperatura",
+      "description": "Recomienda conservar los controles térmicos y servicios del fabricante.",
+      "devices": [
+        "LAPTOP"
+      ],
+      "risk": "low",
+      "actionType": "manual",
+      "defaultSelected": true,
+      "requiresAdmin": false
+    },
+    {
+      "id": "PC-POWER-GUIDE",
+      "name": "Revisar plan de energía del PC",
+      "category": "Rendimiento",
+      "subcategory": "Energía",
+      "description": "Permite revisar el plan actual antes de considerar cambios; no fuerza Alto rendimiento.",
+      "devices": [
+        "PC"
+      ],
+      "risk": "low",
+      "actionType": "manual",
+      "defaultSelected": false,
+      "requiresAdmin": false
+    },
+    {
+      "id": "SECURITY-PRESERVE",
+      "name": "Conservar protecciones de Windows",
+      "category": "Seguridad",
+      "subcategory": "Protección",
+      "description": "Mantiene Defender, Firewall, UAC, BitLocker, Secure Boot y Windows Update.",
+      "devices": [
+        "BOTH"
+      ],
+      "risk": "low",
+      "actionType": "manual",
+      "defaultSelected": true,
+      "requiresAdmin": false
+    }
+  ]
+}
