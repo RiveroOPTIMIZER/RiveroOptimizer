@@ -135,8 +135,8 @@ $run.Add_Click({ [System.Windows.MessageBox]::Show('Esta vista previa solo muest
 $undo.Add_Click({ [System.Windows.MessageBox]::Show('No hay cambios que revertir en esta vista previa.','Rivero Optimizer') | Out-Null })
 function Get-VisualChildren([System.Windows.DependencyObject]$Parent) {
   if ($null -eq $Parent) { return }
-  for ($i = 0; $i -lt [Windows.Media.VisualTreeHelper]::GetChildrenCount($Parent); $i++) {
-    $child = [Windows.Media.VisualTreeHelper]::GetChild($Parent, $i)
+  for ($i = 0; $i -lt [System.Windows.Media.VisualTreeHelper]::GetChildrenCount($Parent); $i++) {
+    $child = [System.Windows.Media.VisualTreeHelper]::GetChild($Parent, $i)
     $child
     Get-VisualChildren $child
   }
