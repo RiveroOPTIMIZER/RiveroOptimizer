@@ -149,7 +149,7 @@ function Set-DeviceVisibility {
       $control.Visibility = if ($target -eq 'BOTH' -or $target -eq $selected.ToUpperInvariant()) { 'Visible' } else { 'Collapsed' }
     }
   }
-  $status.Text = "Perfil $selected: ajustes compartidos y específicos. Vista previa; sin cambios en Windows."
+  $status.Text = "Perfil ${selected}: ajustes compartidos y específicos. Vista previa; sin cambios en Windows."
 }
 $mode.Add_SelectionChanged({ if ($mode.SelectedItem) { Set-DeviceVisibility } })
 Set-DeviceVisibility
