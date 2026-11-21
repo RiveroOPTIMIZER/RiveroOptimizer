@@ -79,39 +79,44 @@ Add-Type -AssemblyName WindowsBase
             <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="0,0,8,0">
               <StackPanel Background="#111813" Margin="0,0,5,0">
                 <TextBlock Text="Ajustes esenciales" Foreground="#86EFAC" FontFamily="Consolas" FontSize="15" Margin="10,8"/>
-                <CheckBox Content="Desactivar historial de actividad"/>
-                <CheckBox Content="Optimización de distribución: revisar configuración"/>
-                <CheckBox Content="Ejecutar limpieza de disco"/>
-                <CheckBox Content="Activar clic derecho para finalizar tareas"/>
-                <CheckBox Content="Desactivar descubrimiento automático de carpetas"/>
-                <CheckBox Content="Revisar aplicaciones de inicio"/>
-                <CheckBox Content="Crear punto de restauración"/>
-                <CheckBox Content="Revisar servicios configurados manualmente"/>
-                <CheckBox Content="Eliminar archivos temporales"/>
-                <CheckBox Content="Revisar Widgets"/>
+                <CheckBox Content="Desactivar historial de actividad" Tag="BOTH"/>
+                <CheckBox Content="Optimización de distribución: revisar configuración" Tag="BOTH"/>
+                <CheckBox Content="Ejecutar limpieza de disco" Tag="BOTH"/>
+                <CheckBox Content="Activar clic derecho para finalizar tareas" Tag="BOTH"/>
+                <CheckBox Content="Desactivar descubrimiento automático de carpetas" Tag="BOTH"/>
+                <CheckBox Content="Revisar aplicaciones de inicio" Tag="BOTH"/>
+                <CheckBox Content="Crear punto de restauración" Tag="BOTH"/>
+                <CheckBox Content="Revisar servicios configurados manualmente" Tag="BOTH"/>
+                <CheckBox Content="Eliminar archivos temporales" Tag="BOTH"/>
+                <CheckBox Content="Revisar Widgets" Tag="BOTH"/>
                 <TextBlock Text="Ajustes avanzados   ·   PRECAUCIÓN" Foreground="#86EFAC" FontSize="15" Margin="10,18,5,8"/>
-                <CheckBox Content="Revisar aplicaciones en segundo plano"/>
-                <CheckBox Content="Revisar almacenamiento reservado"/>
-                <CheckBox Content="Revisar configuración IPv6"/>
-                <CheckBox Content="Revisar componentes opcionales de Windows"/>
-                <CheckBox Content="Mostrar información de privacidad"/>
+                <CheckBox Content="Revisar aplicaciones en segundo plano" Tag="BOTH"/>
+                <CheckBox Content="Revisar almacenamiento reservado" Tag="PC"/>
+                <CheckBox Content="Revisar configuración IPv6" Tag="BOTH"/>
+                <CheckBox Content="Revisar componentes opcionales de Windows" Tag="BOTH"/>
+                <CheckBox Content="Mostrar información de privacidad" Tag="BOTH"/>
               </StackPanel>
             </ScrollViewer>
             <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
               <StackPanel Background="#111813" Margin="5,0,0,0">
                 <TextBlock Text="Personalizar preferencias" Foreground="#86EFAC" FontFamily="Consolas" FontSize="15" Margin="10,8"/>
-                <CheckBox Content="Modo oscuro de Windows" IsChecked="True"/>
-                <CheckBox Content="Mostrar extensiones de archivo" IsChecked="True"/>
-                <CheckBox Content="Mostrar archivos ocultos" IsChecked="True"/>
-                <CheckBox Content="Modo Juego" IsChecked="True"/>
-                <CheckBox Content="Desactivar sugerencias de pantalla de bloqueo"/>
-                <CheckBox Content="Mostrar pantalla de inicio detallada"/>
-                <CheckBox Content="Aceleración del mouse"/>
-                <CheckBox Content="Bloqueo numérico al iniciar"/>
-                <CheckBox Content="Mostrar porcentaje de batería"/>
-                <CheckBox Content="Centrar iconos de la barra de tareas"/>
-                <CheckBox Content="Mantener protecciones de Windows" IsChecked="True" IsEnabled="False"/>
-                <CheckBox Content="Mantener protección térmica del fabricante" IsChecked="True" IsEnabled="False"/>
+                <CheckBox Content="Modo oscuro de Windows" IsChecked="True" Tag="BOTH"/>
+                <CheckBox Content="Mostrar extensiones de archivo" IsChecked="True" Tag="BOTH"/>
+                <CheckBox Content="Mostrar archivos ocultos" IsChecked="True" Tag="BOTH"/>
+                <CheckBox Content="Modo Juego" IsChecked="True" Tag="BOTH"/>
+                <CheckBox Content="Revisar plan de energía de escritorio" Tag="PC"/>
+                <CheckBox Content="Revisar inicio rápido y estado de energía" Tag="PC"/>
+                <CheckBox Content="Desactivar sugerencias de pantalla de bloqueo" Tag="BOTH"/>
+                <CheckBox Content="Mostrar pantalla de inicio detallada" Tag="BOTH"/>
+                <CheckBox Content="Aceleración del mouse" Tag="BOTH"/>
+                <CheckBox Content="Bloqueo numérico al iniciar" Tag="BOTH"/>
+                <CheckBox Content="Mostrar porcentaje de batería" Tag="LAPTOP"/>
+                <CheckBox Content="Conservar suspensión e hibernación" IsChecked="True" IsEnabled="False" Tag="LAPTOP"/>
+                <CheckBox Content="Conservar ahorro de batería y límites térmicos" IsChecked="True" IsEnabled="False" Tag="LAPTOP"/>
+                <CheckBox Content="Revisar aplicaciones de inicio automático" Tag="LAPTOP"/>
+                <CheckBox Content="Centrar iconos de la barra de tareas" Tag="BOTH"/>
+                <CheckBox Content="Mantener protecciones de Windows" IsChecked="True" IsEnabled="False" Tag="BOTH"/>
+                <CheckBox Content="Mantener protección térmica del fabricante" IsChecked="True" IsEnabled="False" Tag="LAPTOP"/>
               </StackPanel>
             </ScrollViewer>
           </Grid>
@@ -134,5 +139,24 @@ $status = $window.FindName('StatusText')
 $mode = $window.FindName('DeviceMode')
 $run.Add_Click({ [System.Windows.MessageBox]::Show('Esta vista previa solo muestra la interfaz. Todavía no aplica ajustes.','Rivero Optimizer') | Out-Null })
 $undo.Add_Click({ [System.Windows.MessageBox]::Show('No hay cambios que revertir en esta vista previa.','Rivero Optimizer') | Out-Null })
-$mode.Add_SelectionChanged({ if ($mode.SelectedItem) { $status.Text = "Perfil seleccionado: $($mode.SelectedItem.Content) · Vista previa solamente." } })
+function Get-VisualChildren([System.Windows.DependencyObject]$Parent) {
+  if ($null -eq $Parent) { return }
+  for ($i = 0; $i -lt [Windows.Media.VisualTreeHelper]::GetChildrenCount($Parent); $i++) {
+    $child = [Windows.Media.VisualTreeHelper]::GetChild($Parent, $i)
+    $child
+    Get-VisualChildren $child
+  }
+}
+function Set-DeviceVisibility {
+  $selected = [string]$mode.SelectedItem.Content
+  foreach ($control in (Get-VisualChildren $window)) {
+    if ($control -is [System.Windows.Controls.CheckBox] -and $control.Tag) {
+      $target = [string]$control.Tag
+      $control.Visibility = if ($target -eq 'BOTH' -or $target -eq $selected.ToUpperInvariant()) { 'Visible' } else { 'Collapsed' }
+    }
+  }
+  $status.Text = "Perfil $selected: ajustes compartidos y específicos. Vista previa; sin cambios en Windows."
+}
+$mode.Add_SelectionChanged({ if ($mode.SelectedItem) { Set-DeviceVisibility } })
+Set-DeviceVisibility
 $window.ShowDialog() | Out-Null
