@@ -43,16 +43,14 @@ Add-Type -AssemblyName WindowsBase
         </StackPanel>
         <TextBox x:Name="SearchBox" Grid.Column="2" Width="230" Height="27" Margin="10,0"
                  VerticalContentAlignment="Center" Background="#0B0F0C" Foreground="#F3F4F6"
-                 BorderBrush="#26352A" ToolTip="Buscar ajustes"/>
-        <ComboBox x:Name="DeviceMode" Grid.Column="3" Width="115" Height="27" SelectedIndex="0"
-                  VerticalContentAlignment="Center" Background="#17221A" Foreground="#111827">
-          <ComboBoxItem Content="PC"/><ComboBoxItem Content="Laptop"/>
-        </ComboBox>
+                 BorderBrush="#26352A" ToolTip="Buscar ajustes en español"/>
+        <TextBlock Grid.Column="3" Text="PC" Foreground="#86EFAC" FontSize="16" FontWeight="Bold"
+                   VerticalAlignment="Center" Margin="12,0,8,0"/>
       </Grid>
     </Border>
     <Border DockPanel.Dock="Bottom" Background="#111813" Padding="8">
       <DockPanel>
-        <TextBlock x:Name="StatusText" Text="Diagnósticos y guías seguras; no se modifican ajustes de Windows."
+        <TextBlock x:Name="StatusText" Text="Perfil PC · Diagnósticos y guías seguras; Windows no se modifica."
                    Foreground="#86EFAC" VerticalAlignment="Center"/>
         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
           <Button x:Name="RunButton" Content="Ejecutar seleccionados" Width="180"/>
@@ -110,17 +108,10 @@ Add-Type -AssemblyName WindowsBase
                 <CheckBox Content="Mostrar pantalla de inicio detallada" Tag="BOTH"/>
                 <CheckBox Content="Aceleración del mouse" Tag="BOTH"/>
                 <CheckBox Content="Bloqueo numérico al iniciar" Tag="BOTH"/>
-                <CheckBox Content="Recomendaciones de batería" Name="TweakBatteryGuide" Tag="LAPTOP"/>
-                <CheckBox Content="Protección térmica del portátil" Name="TweakThermalGuide" Tag="LAPTOP" IsChecked="True"/>
                 <CheckBox Content="Revisar plan de energía del PC" Name="TweakPcPowerGuide" Tag="PC"/>
                 <CheckBox Content="Conservar protecciones de Windows" Name="TweakSecurityGuide" Tag="BOTH" IsChecked="True"/>
-                <CheckBox Content="Mostrar porcentaje de batería" Tag="LAPTOP"/>
-                <CheckBox Content="Conservar suspensión e hibernación" IsChecked="True" IsEnabled="False" Tag="LAPTOP"/>
-                <CheckBox Content="Conservar ahorro de batería y límites térmicos" IsChecked="True" IsEnabled="False" Tag="LAPTOP"/>
-                <CheckBox Content="Revisar aplicaciones de inicio automático" Tag="LAPTOP"/>
                 <CheckBox Content="Centrar iconos de la barra de tareas" Tag="BOTH"/>
                 <CheckBox Content="Mantener protecciones de Windows" IsChecked="True" IsEnabled="False" Tag="BOTH"/>
-                <CheckBox Content="Mantener protección térmica del fabricante" IsChecked="True" IsEnabled="False" Tag="LAPTOP"/>
               </StackPanel>
             </ScrollViewer>
           </Grid>
@@ -144,7 +135,6 @@ $window = [Windows.Markup.XamlReader]::Load($reader)
 $run = $window.FindName('RunButton')
 $undo = $window.FindName('UndoButton')
 $status = $window.FindName('StatusText')
-$mode = $window.FindName('DeviceMode')
 $search = $window.FindName('SearchBox')
 $modulePath = Join-Path $PSScriptRoot 'Modules/SafeActions.ps1'
 $catalogModulePath = Join-Path $PSScriptRoot 'Modules/TweakCatalog.ps1'
@@ -161,13 +151,11 @@ $undo.IsEnabled = $false
 $undo.Content = 'Sin cambios para deshacer'
 $run.Add_Click({
   try {
-    $selectedMode = if ([string]$mode.SelectedItem.Content -eq 'Laptop') { 'LAPTOP' } else { 'PC' }
+    $selectedMode = 'PC'
     $actionMap = @{
       TweakOsInfo = 'SYS-OS-INFO'
       TweakHardwareInfo = 'SYS-HARDWARE-INFO'
       TweakPowerInfo = 'SYS-POWER-STATUS'
-      TweakBatteryGuide = 'LAPTOP-BATTERY-GUIDE'
-      TweakThermalGuide = 'LAPTOP-THERMAL-GUIDE'
       TweakPcPowerGuide = 'PC-POWER-GUIDE'
       TweakSecurityGuide = 'SECURITY-PRESERVE'
     }
@@ -185,7 +173,7 @@ $run.Add_Click({
     }
     if ($output.Count -eq 0) { $output.Add('Selecciona al menos un diagnóstico o una guía disponible para este dispositivo.') }
     [System.Windows.MessageBox]::Show(($output -join [Environment]::NewLine), 'Rivero Optimizer') | Out-Null
-    $status.Text = "Listo: se ejecutaron diagnósticos/guías para $selectedMode. No se modificó Windows."
+    $status.Text = "Listo: se ejecutaron diagnósticos y guías para PC. No se modificó Windows."
   }
   catch {
     [System.Windows.MessageBox]::Show($_.Exception.Message, 'Rivero Optimizer - Error') | Out-Null
@@ -204,7 +192,7 @@ function Get-VisualChildren([System.Windows.DependencyObject]$Parent) {
   }
 }
 function Set-DeviceVisibility {
-  $selected = [string]$mode.SelectedItem.Content
+  $selected = 'PC'
   foreach ($control in (Get-VisualChildren $window)) {
     if ($control -is [System.Windows.Controls.CheckBox] -and $control.Tag) {
       $target = [string]$control.Tag
@@ -214,9 +202,8 @@ function Set-DeviceVisibility {
       $control.Visibility = if ($deviceMatch -and $searchMatch) { 'Visible' } else { 'Collapsed' }
     }
   }
-  $status.Text = "Perfil ${selected}: ajustes compartidos y específicos. Vista previa; sin cambios en Windows."
+  $status.Text = "Perfil PC: ajustes disponibles para ordenador de escritorio. Interfaz en español; sin cambios en Windows."
 }
-$mode.Add_SelectionChanged({ if ($mode.SelectedItem) { Set-DeviceVisibility } })
 $search.Add_TextChanged({ Set-DeviceVisibility })
 Set-DeviceVisibility
 # Solo se habilitan controles que tienen una acción real y validada en el catálogo.
@@ -224,8 +211,6 @@ $supportedControlNames = @(
   'TweakOsInfo',
   'TweakHardwareInfo',
   'TweakPowerInfo',
-  'TweakBatteryGuide',
-  'TweakThermalGuide',
   'TweakPcPowerGuide',
   'TweakSecurityGuide'
 )
