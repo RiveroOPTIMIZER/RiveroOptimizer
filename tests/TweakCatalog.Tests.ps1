@@ -13,18 +13,12 @@ Describe 'Rivero tweak catalog' {
         $script:Catalog.schemaVersion | Should -Be 1
     }
 
-    It 'shows shared and laptop-only items in laptop mode' {
-        $items = @(Get-RiveroAvailableTweaks -Mode LAPTOP -Catalog $script:Catalog)
-        ($items.id -contains 'LAPTOP-BATTERY-GUIDE') | Should -BeTrue
-        ($items.id -contains 'PC-POWER-GUIDE') | Should -BeFalse
-        ($items.id -contains 'SYS-OS-INFO') | Should -BeTrue
-    }
-
-    It 'shows shared and PC-only items in PC mode' {
+    It 'exposes only shared and PC-specific items' {
         $items = @(Get-RiveroAvailableTweaks -Mode PC -Catalog $script:Catalog)
         ($items.id -contains 'PC-POWER-GUIDE') | Should -BeTrue
-        ($items.id -contains 'LAPTOP-BATTERY-GUIDE') | Should -BeFalse
         ($items.id -contains 'SYS-OS-INFO') | Should -BeTrue
+        ($items.id -contains 'LAPTOP-BATTERY-GUIDE') | Should -BeFalse
+        (@($script:Catalog.tweaks | Where-Object { $_.devices -contains 'LAPTOP' }).Count) | Should -Be 0
     }
 
     It 'does not expose executable script payloads in the starter catalog' {
