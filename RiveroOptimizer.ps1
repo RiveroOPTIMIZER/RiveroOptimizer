@@ -1,319 +1,405 @@
 
 # ============================================================
-# RIVERO OPTIMIZER
-# Version: 0.2.0
+# RIVERO OPTIMIZER 0.3.0
 # Windows Performance Toolkit
-# Credits: Chris Titus Tech WinUtil / Sophia Script
+# Modern WPF Interface
 # ============================================================
 
 $ErrorActionPreference = "Stop"
 
-Add-Type -AssemblyName System.Windows.Forms
-Add-Type -AssemblyName System.Drawing
+Add-Type -AssemblyName PresentationFramework
+Add-Type -AssemblyName PresentationCore
+Add-Type -AssemblyName WindowsBase
 
-$script:RiveroVersion = "0.2.0"
-$script:RiveroBackupPath = Join-Path $env:ProgramData "RiveroOptimizer\Backups"
-$script:DeviceMode = "AUTO"
-$script:SelectedDevice = "PC"
-
-$script:Categories = @(
-    "Essential Tweaks",
-    "Performance",
-    "Gaming",
-    "Privacy",
-    "Debloat",
-    "Advanced",
-    "Custom"
-)
+$script:Version = "0.3.0"
+$script:Device = "PC"
 
 function Get-RiveroDevice {
     $battery = Get-CimInstance Win32_Battery -ErrorAction SilentlyContinue
-
-    if ($battery) {
-        return "LAPTOP"
-    }
-
+    if ($battery) { return "LAPTOP" }
     return "PC"
 }
 
-function Get-RiveroSystemInfo {
+function Get-RiveroInfo {
     $os = Get-CimInstance Win32_OperatingSystem
     $cpu = Get-CimInstance Win32_Processor
     $computer = Get-CimInstance Win32_ComputerSystem
     $gpu = Get-CimInstance Win32_VideoController
 
-    [PSCustomObject]@{
+    return @{
         Windows = $os.Caption
-        Version = $os.Version
-        Build = $os.BuildNumber
         CPU = ($cpu.Name -join ", ")
-        RAM_GB = [math]::Round($computer.TotalPhysicalMemory / 1GB, 2)
+        RAM = "$([math]::Round($computer.TotalPhysicalMemory / 1GB, 1)) GB"
         GPU = ($gpu.Name -join ", ")
         Architecture = $os.OSArchitecture
-        Device = Get-RiveroDevice
     }
 }
 
-function Initialize-RiveroBackup {
-    if (-not (Test-Path $script:RiveroBackupPath)) {
-        New-Item -ItemType Directory `
-            -Path $script:RiveroBackupPath -Force | Out-Null
-    }
+[xml]$xaml = @"
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Rivero Optimizer"
+        Height="720" Width="1120"
+        MinHeight="650" MinWidth="950"
+        WindowStartupLocation="CenterScreen"
+        Background="#0B1020"
+        Foreground="White"
+        FontFamily="Segoe UI">
+
+    <Window.Resources>
+        <Style x:Key="NavButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#AAB4CC"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="14,12"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,3"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="9"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border"
+                                        Property="Background" Value="#1C2942"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Background" Value="#1677FF"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="18,11"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border"
+                                        Property="Background" Value="#3991FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="245"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- MENU LATERAL -->
+        <Border Grid.Column="0" Background="#10182B">
+            <DockPanel Margin="18">
+                <StackPanel DockPanel.Dock="Top">
+                    <TextBlock Text="RIVERO"
+                               FontSize="25"
+                               FontWeight="Bold"
+                               Foreground="#3991FF"/>
+                    <TextBlock Text="OPTIMIZER"
+                               FontSize="11"
+                               Foreground="#8492AA"
+                               Margin="2,0,0,25"/>
+
+                    <TextBlock Text="DISPOSITIVO"
+                               Foreground="#8492AA"
+                               FontSize="11"
+                               Margin="0,0,0,8"/>
+
+                    <ComboBox x:Name="DeviceBox"
+                              Height="36"
+                              Background="#1B2942"
+                              Foreground="White"
+                              SelectedIndex="0"
+                              Margin="0,0,0,22">
+                        <ComboBoxItem Content="PC"/>
+                        <ComboBoxItem Content="LAPTOP"/>
+                    </ComboBox>
+
+                    <TextBlock Text="MENÚ PRINCIPAL"
+                               Foreground="#8492AA"
+                               FontSize="11"
+                               Margin="0,0,0,8"/>
+
+                    <Button x:Name="HomeButton"
+                            Content="⌂   Inicio"
+                            Style="{StaticResource NavButton}"/>
+
+                    <TextBlock Text="OPTIMIZACIÓN"
+                               Foreground="#8492AA"
+                               FontSize="11"
+                               Margin="0,20,0,8"/>
+
+                    <StackPanel x:Name="CategoryMenu"/>
+                </StackPanel>
+
+                <StackPanel DockPanel.Dock="Bottom">
+                    <Border Background="#1B2942"
+                            CornerRadius="9"
+                            Padding="12"
+                            Margin="0,15,0,0">
+                        <StackPanel>
+                            <TextBlock Text="RIVERO OPTIMIZER"
+                                       FontWeight="Bold"/>
+                            <TextBlock Text="Versión 0.3.0"
+                                       Foreground="#8492AA"
+                                       FontSize="11"
+                                       Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- CONTENIDO -->
+        <Grid Grid.Column="1" Margin="30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0">
+                <TextBlock Text="Panel de control"
+                           FontSize="27"
+                           FontWeight="Bold"/>
+                <TextBlock x:Name="Subtitle"
+                           Text="Bienvenido a Rivero Optimizer"
+                           Foreground="#8492AA"
+                           Margin="0,5,0,22"/>
+            </StackPanel>
+
+            <UniformGrid Grid.Row="1" Columns="3" Margin="0,0,0,20">
+                <Border Background="#15223A" CornerRadius="12"
+                        Padding="15" Margin="0,0,10,0">
+                    <StackPanel>
+                        <TextBlock Text="DISPOSITIVO"
+                                   Foreground="#8492AA"
+                                   FontSize="11"/>
+                        <TextBlock x:Name="DeviceInfo"
+                                   Text="PC"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Margin="0,7,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="#15223A" CornerRadius="12"
+                        Padding="15" Margin="5,0">
+                    <StackPanel>
+                        <TextBlock Text="MEMORIA RAM"
+                                   Foreground="#8492AA"
+                                   FontSize="11"/>
+                        <TextBlock x:Name="RamInfo"
+                                   Text="Detectando..."
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Margin="0,7,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="#15223A" CornerRadius="12"
+                        Padding="15" Margin="10,0,0,0">
+                    <StackPanel>
+                        <TextBlock Text="ESTADO"
+                                   Foreground="#8492AA"
+                                   FontSize="11"/>
+                        <TextBlock Text="Preparado"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="#55D69E"
+                                   Margin="0,7,0,0"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <Border Grid.Row="2"
+                    Background="#111C31"
+                    CornerRadius="14"
+                    Padding="24">
+                <StackPanel>
+                    <TextBlock x:Name="PageTitle"
+                               Text="Bienvenido"
+                               FontSize="23"
+                               FontWeight="Bold"/>
+
+                    <TextBlock x:Name="PageDescription"
+                               Text="Selecciona una categoría del menú lateral."
+                               Foreground="#AAB4CC"
+                               TextWrapping="Wrap"
+                               Margin="0,8,0,22"/>
+
+                    <Border Background="#1B2942"
+                            CornerRadius="10"
+                            Padding="18">
+                        <StackPanel>
+                            <TextBlock Text="INFORMACIÓN"
+                                       FontWeight="Bold"
+                                       Foreground="#3991FF"/>
+                            <TextBlock x:Name="DetailText"
+                                       Text="Rivero está listo para configurar tu equipo."
+                                       Foreground="#D3DCEE"
+                                       TextWrapping="Wrap"
+                                       Margin="0,10,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Orientation="Horizontal"
+                                Margin="0,22,0,0">
+                        <Button x:Name="InfoButton"
+                                Content="Información del sistema"
+                                Style="{StaticResource ActionButton}"
+                                Margin="0,0,10,0"/>
+                        <Button x:Name="BackupButton"
+                                Content="Guardar diagnóstico"
+                                Style="{StaticResource ActionButton}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Grid.Row="3"
+                       Text="Rivero Optimizer  •  Inspirado en WinUtil y Sophia Script"
+                       Foreground="#65748E"
+                       FontSize="11"
+                       Margin="0,15,0,0"/>
+        </Grid>
+    </Grid>
+</Window>
+"@
+
+$reader = New-Object System.Xml.XmlNodeReader $xaml
+$window = [Windows.Markup.XamlReader]::Load($reader)
+
+$names = @(
+    "DeviceBox", "DeviceInfo", "RamInfo", "CategoryMenu",
+    "HomeButton", "PageTitle", "PageDescription",
+    "DetailText", "InfoButton", "BackupButton", "Subtitle"
+)
+
+$ui = @{}
+foreach ($name in $names) {
+    $ui[$name] = $window.FindName($name)
 }
 
-function New-RiveroBackup {
-    Initialize-RiveroBackup
+$categories = @(
+    "Ajustes esenciales",
+    "Rendimiento",
+    "Juegos",
+    "Privacidad",
+    "Aplicaciones",
+    "Avanzado",
+    "Personalizado"
+)
 
-    $file = Join-Path $script:RiveroBackupPath (
-        "SystemInfo_{0}.json" -f (Get-Date -Format "yyyyMMdd_HHmmss")
-    )
+function Set-RiveroPage {
+    param([string]$Category)
 
-    Get-RiveroSystemInfo |
-        ConvertTo-Json -Depth 5 |
-        Set-Content -Path $file -Encoding UTF8
+    $device = $ui.DeviceBox.SelectedItem.Content.ToString()
+    $script:Device = $device
 
-    return $file
+    $ui.DeviceInfo.Text = $device
+    $ui.PageTitle.Text = $Category
+    $ui.Subtitle.Text = "$device  /  $Category"
+    $ui.PageDescription.Text = "Configuración de $Category para $device."
+    $ui.DetailText.Text = "El catálogo de ajustes de esta categoría todavía está en desarrollo. No se han realizado cambios en Windows."
 }
 
-function Show-RiveroInfo {
-    $info = Get-RiveroSystemInfo
+foreach ($category in $categories) {
+    $button = New-Object System.Windows.Controls.Button
+    $button.Content = "    $category"
+    $button.Style = $window.FindResource("NavButton")
+    $button.Tag = $category
 
+    $button.Add_Click({
+        Set-RiveroPage -Category $this.Tag
+    }.GetNewClosure())
+
+    [void]$ui.CategoryMenu.Children.Add($button)
+}
+
+$ui.HomeButton.Add_Click({
+    $ui.PageTitle.Text = "Bienvenido"
+    $ui.Subtitle.Text = "Panel principal de Rivero Optimizer"
+    $ui.PageDescription.Text = "Selecciona una categoría para comenzar."
+    $ui.DetailText.Text = "El motor de optimización se conectará en la siguiente fase."
+})
+
+$ui.DeviceBox.Add_SelectionChanged({
+    $ui.DeviceInfo.Text = $ui.DeviceBox.SelectedItem.Content.ToString()
+})
+
+$ui.InfoButton.Add_Click({
+    $info = Get-RiveroInfo
     $message = @"
 WINDOWS: $($info.Windows)
-VERSION: $($info.Version)
-BUILD: $($info.Build)
 
-CPU: $($info.CPU)
-RAM: $($info.RAM_GB) GB
-GPU: $($info.GPU)
+PROCESADOR: $($info.CPU)
 
-DEVICE: $($info.Device)
-ARCHITECTURE: $($info.Architecture)
+MEMORIA RAM: $($info.RAM)
+
+GRÁFICOS: $($info.GPU)
+
+ARQUITECTURA: $($info.Architecture)
 "@
+    [System.Windows.MessageBox]::Show($message, "Información del sistema")
+})
 
-    [System.Windows.Forms.MessageBox]::Show(
-        $message,
-        "RIVERO SYSTEM INFORMATION",
-        "OK",
-        "Information"
-    ) | Out-Null
-}
+$ui.BackupButton.Add_Click({
+    try {
+        $folder = Join-Path $env:ProgramData "RiveroOptimizer\Backups"
+        New-Item -ItemType Directory -Path $folder -Force | Out-Null
 
-function Show-RiveroCategory {
-    param(
-        [string]$Device,
-        [string]$Category,
-        [string]$Profile
-    )
+        $file = Join-Path $folder (
+            "Diagnostico_{0}.json" -f (Get-Date -Format "yyyyMMdd_HHmmss")
+        )
 
-    $message = @"
-DEVICE: $Device
-CATEGORY: $Category
-PROFILE: $Profile
+        Get-RiveroInfo |
+            ConvertTo-Json -Depth 4 |
+            Set-Content -Path $file -Encoding UTF8
 
-The tweak catalog will be connected in the next development stage.
-No system changes have been made.
-"@
-
-    [System.Windows.Forms.MessageBox]::Show(
-        $message,
-        "RIVERO OPTIMIZER",
-        "OK",
-        "Information"
-    ) | Out-Null
-}
-
-function Show-RiveroWindow {
-
-    $form = New-Object System.Windows.Forms.Form
-    $form.Text = "RIVERO OPTIMIZER v$script:RiveroVersion"
-    $form.Size = New-Object System.Drawing.Size(950, 650)
-    $form.StartPosition = "CenterScreen"
-    $form.BackColor = [Drawing.Color]::FromArgb(15, 20, 30)
-    $form.ForeColor = [Drawing.Color]::White
-    $form.FormBorderStyle = "FixedSingle"
-    $form.MaximizeBox = $false
-
-    # HEADER
-    $title = New-Object Windows.Forms.Label
-    $title.Text = "RIVERO OPTIMIZER"
-    $title.Font = New-Object Drawing.Font(
-        "Segoe UI", 24, [Drawing.FontStyle]::Bold
-    )
-    $title.ForeColor = [Drawing.Color]::FromArgb(56, 189, 248)
-    $title.Location = New-Object Drawing.Point(25, 20)
-    $title.Size = New-Object Drawing.Size(500, 45)
-    $form.Controls.Add($title)
-
-    $subtitle = New-Object Windows.Forms.Label
-    $subtitle.Text = "WINDOWS PERFORMANCE TOOLKIT"
-    $subtitle.Location = New-Object Drawing.Point(30, 70)
-    $subtitle.Size = New-Object Drawing.Size(400, 25)
-    $subtitle.ForeColor = [Drawing.Color]::Silver
-    $form.Controls.Add($subtitle)
-
-    # DEVICE DETECTION
-    $detected = Get-RiveroDevice
-
-    $deviceLabel = New-Object Windows.Forms.Label
-    $deviceLabel.Text = "DETECTED DEVICE: $detected"
-    $deviceLabel.Location = New-Object Drawing.Point(650, 25)
-    $deviceLabel.Size = New-Object Drawing.Size(260, 25)
-    $deviceLabel.ForeColor = [Drawing.Color]::LightGreen
-    $form.Controls.Add($deviceLabel)
-
-    # DEVICE SELECTION
-    $deviceTitle = New-Object Windows.Forms.Label
-    $deviceTitle.Text = "SELECT DEVICE"
-    $deviceTitle.Location = New-Object Drawing.Point(30, 125)
-    $deviceTitle.Size = New-Object Drawing.Size(250, 25)
-    $form.Controls.Add($deviceTitle)
-
-    $deviceBox = New-Object Windows.Forms.ComboBox
-    $deviceBox.Location = New-Object Drawing.Point(30, 155)
-    $deviceBox.Size = New-Object Drawing.Size(260, 30)
-    $deviceBox.DropDownStyle = "DropDownList"
-
-    [void]$deviceBox.Items.Add("AUTO DETECT")
-    [void]$deviceBox.Items.Add("PC")
-    [void]$deviceBox.Items.Add("LAPTOP")
-
-    $deviceBox.SelectedIndex = 0
-    $form.Controls.Add($deviceBox)
-
-    # PROFILE
-    $profileTitle = New-Object Windows.Forms.Label
-    $profileTitle.Text = "OPTIMIZATION PROFILE"
-    $profileTitle.Location = New-Object Drawing.Point(330, 125)
-    $profileTitle.Size = New-Object Drawing.Size(250, 25)
-    $form.Controls.Add($profileTitle)
-
-    $profileBox = New-Object Windows.Forms.ComboBox
-    $profileBox.Location = New-Object Drawing.Point(330, 155)
-    $profileBox.Size = New-Object Drawing.Size(260, 30)
-    $profileBox.DropDownStyle = "DropDownList"
-
-    [void]$profileBox.Items.Add("STANDARD")
-    [void]$profileBox.Items.Add("AGGRESSIVE")
-    [void]$profileBox.Items.Add("EXPERT")
-
-    $profileBox.SelectedIndex = 0
-    $form.Controls.Add($profileBox)
-
-    # CATEGORY LIST
-    $categoryTitle = New-Object Windows.Forms.Label
-    $categoryTitle.Text = "OPTIMIZATION CATEGORIES"
-    $categoryTitle.Font = New-Object Drawing.Font(
-        "Segoe UI", 15, [Drawing.FontStyle]::Bold
-    )
-    $categoryTitle.Location = New-Object Drawing.Point(30, 225)
-    $categoryTitle.Size = New-Object Drawing.Size(400, 35)
-    $form.Controls.Add($categoryTitle)
-
-    $categoryList = New-Object Windows.Forms.ListBox
-    $categoryList.Location = New-Object Drawing.Point(30, 270)
-    $categoryList.Size = New-Object Drawing.Size(400, 190)
-    $categoryList.BackColor = [Drawing.Color]::FromArgb(25, 32, 45)
-    $categoryList.ForeColor = [Drawing.Color]::White
-    $categoryList.Font = New-Object Drawing.Font("Segoe UI", 11)
-
-    foreach ($category in $script:Categories) {
-        [void]$categoryList.Items.Add($category)
+        [System.Windows.MessageBox]::Show(
+            "Diagnóstico guardado en:`n$file",
+            "Rivero Optimizer"
+        )
     }
+    catch {
+        [System.Windows.MessageBox]::Show(
+            $_.Exception.Message,
+            "Error"
+        )
+    }
+})
 
-    $form.Controls.Add($categoryList)
+$detected = Get-RiveroDevice
+$ui.DeviceBox.SelectedIndex = if ($detected -eq "LAPTOP") { 1 } else { 0 }
 
-    # OPEN CATEGORY
-    $openButton = New-Object Windows.Forms.Button
-    $openButton.Text = "OPEN CATEGORY"
-    $openButton.Location = New-Object Drawing.Point(30, 475)
-    $openButton.Size = New-Object Drawing.Size(190, 45)
-    $form.Controls.Add($openButton)
+$info = Get-RiveroInfo
+$ui.RamInfo.Text = $info.RAM
 
-    $openButton.Add_Click({
-        if ($categoryList.SelectedIndex -lt 0) {
-            [Windows.Forms.MessageBox]::Show(
-                "Select a category first.",
-                "RIVERO"
-            ) | Out-Null
-            return
-        }
-
-        $device = $deviceBox.SelectedItem.ToString()
-
-        if ($device -eq "AUTO DETECT") {
-            $device = Get-RiveroDevice
-        }
-
-        $script:SelectedDevice = $device
-
-        Show-RiveroCategory `
-            -Device $device `
-            -Category $categoryList.SelectedItem.ToString() `
-            -Profile $profileBox.SelectedItem.ToString()
-    })
-
-    # SYSTEM INFORMATION
-    $infoButton = New-Object Windows.Forms.Button
-    $infoButton.Text = "SYSTEM INFORMATION"
-    $infoButton.Location = New-Object Drawing.Point(500, 270)
-    $infoButton.Size = New-Object Drawing.Size(200, 45)
-    $form.Controls.Add($infoButton)
-    $infoButton.Add_Click({ Show-RiveroInfo })
-
-    # BACKUP
-    $backupButton = New-Object Windows.Forms.Button
-    $backupButton.Text = "CREATE BACKUP"
-    $backupButton.Location = New-Object Drawing.Point(500, 330)
-    $backupButton.Size = New-Object Drawing.Size(200, 45)
-    $form.Controls.Add($backupButton)
-
-    $backupButton.Add_Click({
-        try {
-            $path = New-RiveroBackup
-
-            [Windows.Forms.MessageBox]::Show(
-                "System information saved:`n$path",
-                "RIVERO BACKUP",
-                "OK",
-                "Information"
-            ) | Out-Null
-        }
-        catch {
-            [Windows.Forms.MessageBox]::Show(
-                $_.Exception.Message,
-                "BACKUP ERROR"
-            ) | Out-Null
-        }
-    })
-
-    # CREDITS
-    $credits = New-Object Windows.Forms.Label
-    $credits.Text = "Inspired by Chris Titus Tech WinUtil and Sophia Script"
-    $credits.Location = New-Object Drawing.Point(30, 550)
-    $credits.Size = New-Object Drawing.Size(650, 25)
-    $credits.ForeColor = [Drawing.Color]::Silver
-    $credits.Font = New-Object Drawing.Font("Segoe UI", 8)
-    $form.Controls.Add($credits)
-
-    $version = New-Object Windows.Forms.Label
-    $version.Text = "RIVERO v$script:RiveroVersion"
-    $version.Location = New-Object Drawing.Point(790, 550)
-    $version.Size = New-Object Drawing.Size(120, 25)
-    $version.ForeColor = [Drawing.Color]::FromArgb(56, 189, 248)
-    $form.Controls.Add($version)
-
-    [void]$form.ShowDialog()
-}
-
-try {
-    Show-RiveroWindow
-}
-catch {
-    [Windows.Forms.MessageBox]::Show(
-        $_.Exception.Message,
-        "RIVERO OPTIMIZER ERROR",
-        "OK",
-        "Error"
-    ) | Out-Null
-}
+[void]$window.ShowDialog()
