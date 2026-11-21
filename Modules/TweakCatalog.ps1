@@ -35,7 +35,7 @@ function Import-RiveroTweakCatalog {
         }
         $ids[[string]$tweak.id] = $true
 
-        if ($tweak.actionType -notin @('diagnostic', 'manual')) {
+        if ($tweak.actionType -notin @('diagnostic', 'manual', 'reversible')) {
             throw "Tipo de acción no permitido en este catálogo: $($tweak.actionType)"
         }
 
