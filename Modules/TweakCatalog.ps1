@@ -1,4 +1,4 @@
-<#
+﻿<#
 Rivero Optimizer - catalog loader and device filtering
 Windows PowerShell 5.1+
 Loads metadata only; this module does not apply system changes.
