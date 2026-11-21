@@ -5,7 +5,7 @@ function Invoke-RiveroTweak {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)][string]$Id,
-        [Parameter(Mandatory)][ValidateSet('PC', 'LAPTOP')][string]$Mode
+        [Parameter(Mandatory)][ValidateSet('PC')][string]$Mode
     )
 
     switch ($Id) {
@@ -34,22 +34,7 @@ function Invoke-RiveroTweak {
                 Details = @("Plan activo: $($plans -join ' ')", $batteryText)
             }
         }
-        'LAPTOP-BATTERY-GUIDE' {
-            if ($Mode -ne 'LAPTOP') { throw 'Esta recomendación solo está disponible para portátiles.' }
-            return [pscustomobject]@{
-                Id = $Id; Status = 'MANUAL'; Title = 'Recomendaciones de batería'
-                Details = @('Abre Configuración > Sistema > Energía y batería.', 'Usa el ahorro de batería integrado cuando lo necesites.', 'No cambies los límites térmicos ni desactives la suspensión.')
-            }
-        }
-        'LAPTOP-THERMAL-GUIDE' {
-            if ($Mode -ne 'LAPTOP') { throw 'Esta recomendación solo está disponible para portátiles.' }
-            return [pscustomobject]@{
-                Id = $Id; Status = 'MANUAL'; Title = 'Protección térmica del portátil'
-                Details = @('Conserva los servicios y controles térmicos del fabricante.', 'No fuerces planes de energía ni desactives la protección térmica.')
-            }
-        }
         'PC-POWER-GUIDE' {
-            if ($Mode -ne 'PC') { throw 'Esta recomendación solo está disponible para PC.' }
             return [pscustomobject]@{
                 Id = $Id; Status = 'MANUAL'; Title = 'Revisar plan de energía del PC'
                 Details = @('Abre Configuración > Sistema > Energía.', 'Revisa el plan actual antes de modificarlo.', 'Rivero no fuerza automáticamente Alto rendimiento.')
