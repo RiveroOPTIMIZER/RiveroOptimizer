@@ -10,14 +10,14 @@ Add-Type -AssemblyName WindowsBase
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Rivero Optimizer | Preview" Height="790" Width="1420"
         MinHeight="650" MinWidth="1050" WindowStartupLocation="CenterScreen"
-        Background="#171D2A" Foreground="#F3F4F6" FontFamily="Segoe UI">
+        Background="#0B0F0C" Foreground="#F3F4F6" FontFamily="Segoe UI">
   <Window.Resources>
-    <SolidColorBrush x:Key="Panel" Color="#202B3D"/>
+    <SolidColorBrush x:Key="Panel" Color="#111813"/>
     <SolidColorBrush x:Key="Green" Color="#22C55E"/>
     <Style TargetType="Button">
       <Setter Property="Foreground" Value="#F3F4F6"/>
-      <Setter Property="Background" Value="#263449"/>
-      <Setter Property="BorderBrush" Value="#64748B"/>
+      <Setter Property="Background" Value="#17221A"/>
+      <Setter Property="BorderBrush" Value="#26352A"/>
       <Setter Property="Padding" Value="12,5"/>
       <Setter Property="Margin" Value="3"/>
     </Style>
@@ -30,7 +30,7 @@ Add-Type -AssemblyName WindowsBase
     </Style>
   </Window.Resources>
   <DockPanel>
-    <Border DockPanel.Dock="Top" Background="#202B3D" Padding="12">
+    <Border DockPanel.Dock="Top" Background="#111813" Padding="12">
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/>
@@ -39,21 +39,21 @@ Add-Type -AssemblyName WindowsBase
         <TextBlock Text="◆" Foreground="#22C55E" FontSize="28" VerticalAlignment="Center" Margin="5,0,18,0"/>
         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
           <Button Content="Instalar" Width="105"/>
-          <Button Content="Ajustes" Width="105" Background="#315A43"/>
+          <Button Content="Ajustes" Width="105" Background="#22C55E"/>
           <Button Content="Configuración" Width="125"/>
           <Button Content="Actualizaciones" Width="125"/>
           <Button Content="Crear Windows 11" Width="145"/>
         </StackPanel>
         <TextBox x:Name="SearchBox" Grid.Column="2" Width="230" Height="27" Margin="10,0"
-                 VerticalContentAlignment="Center" Background="#17202D" Foreground="#F3F4F6"
-                 BorderBrush="#64748B" ToolTip="Buscar ajustes"/>
+                 VerticalContentAlignment="Center" Background="#0B0F0C" Foreground="#F3F4F6"
+                 BorderBrush="#26352A" ToolTip="Buscar ajustes"/>
         <ComboBox x:Name="DeviceMode" Grid.Column="3" Width="115" Height="27" SelectedIndex="0"
-                  VerticalContentAlignment="Center" Background="#263449" Foreground="#111827">
+                  VerticalContentAlignment="Center" Background="#17221A" Foreground="#111827">
           <ComboBoxItem Content="PC"/><ComboBoxItem Content="Laptop"/>
         </ComboBox>
       </Grid>
     </Border>
-    <Border DockPanel.Dock="Bottom" Background="#202B3D" Padding="8">
+    <Border DockPanel.Dock="Bottom" Background="#111813" Padding="8">
       <DockPanel>
         <TextBlock x:Name="StatusText" Text="Vista previa: no se aplican cambios en Windows."
                    Foreground="#86EFAC" VerticalAlignment="Center"/>
@@ -63,7 +63,7 @@ Add-Type -AssemblyName WindowsBase
         </StackPanel>
       </DockPanel>
     </Border>
-    <TabControl Background="#171D2A" BorderBrush="#475569" Margin="8">
+    <TabControl Background="#0B0F0C" BorderBrush="#26352A" Margin="8">
       <TabItem Header="Ajustes">
         <Grid Margin="8">
           <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
@@ -75,10 +75,10 @@ Add-Type -AssemblyName WindowsBase
             <Button Content="Quitar AppX" Width="150"/>
           </StackPanel>
           <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions><ColumnDefinition Width="1.05*"/><ColumnDefinition Width="1fr"/></Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions><ColumnDefinition Width="1.05*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
             <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="0,0,8,0">
-              <StackPanel Background="#202B3D" Margin="0,0,5,0">
-                <TextBlock Text="Ajustes esenciales" Foreground="#86B6FF" FontFamily="Consolas" FontSize="15" Margin="10,8"/>
+              <StackPanel Background="#111813" Margin="0,0,5,0">
+                <TextBlock Text="Ajustes esenciales" Foreground="#86EFAC" FontFamily="Consolas" FontSize="15" Margin="10,8"/>
                 <CheckBox Content="Desactivar historial de actividad"/>
                 <CheckBox Content="Optimización de distribución: revisar configuración"/>
                 <CheckBox Content="Ejecutar limpieza de disco"/>
@@ -89,7 +89,7 @@ Add-Type -AssemblyName WindowsBase
                 <CheckBox Content="Revisar servicios configurados manualmente"/>
                 <CheckBox Content="Eliminar archivos temporales"/>
                 <CheckBox Content="Revisar Widgets"/>
-                <TextBlock Text="Ajustes avanzados   ·   PRECAUCIÓN" Foreground="#86B6FF" FontSize="15" Margin="10,18,5,8"/>
+                <TextBlock Text="Ajustes avanzados   ·   PRECAUCIÓN" Foreground="#86EFAC" FontSize="15" Margin="10,18,5,8"/>
                 <CheckBox Content="Revisar aplicaciones en segundo plano"/>
                 <CheckBox Content="Revisar almacenamiento reservado"/>
                 <CheckBox Content="Revisar configuración IPv6"/>
@@ -98,8 +98,8 @@ Add-Type -AssemblyName WindowsBase
               </StackPanel>
             </ScrollViewer>
             <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
-              <StackPanel Background="#202B3D" Margin="5,0,0,0">
-                <TextBlock Text="Personalizar preferencias" Foreground="#86B6FF" FontFamily="Consolas" FontSize="15" Margin="10,8"/>
+              <StackPanel Background="#111813" Margin="5,0,0,0">
+                <TextBlock Text="Personalizar preferencias" Foreground="#86EFAC" FontFamily="Consolas" FontSize="15" Margin="10,8"/>
                 <CheckBox Content="Modo oscuro de Windows" IsChecked="True"/>
                 <CheckBox Content="Mostrar extensiones de archivo" IsChecked="True"/>
                 <CheckBox Content="Mostrar archivos ocultos" IsChecked="True"/>
