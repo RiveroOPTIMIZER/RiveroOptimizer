@@ -34,6 +34,29 @@ function Invoke-RiveroTweak {
                 Details = @("Plan activo: $($plans -join ' ')", $batteryText)
             }
         }
+        'PC-STARTUP-AUDIT' {
+            $items = New-Object System.Collections.Generic.List[string]
+            $runPaths = @(
+                'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run',
+                'HKLM:\Software\Microsoft\Windows\CurrentVersion\Run',
+                'HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Run'
+            )
+            foreach ($path in $runPaths) {
+                if (Test-Path -LiteralPath $path) {
+                    $properties = Get-ItemProperty -LiteralPath $path -ErrorAction SilentlyContinue
+                    foreach ($property in $properties.PSObject.Properties) {
+                        if ($property.Name -notlike 'PS*') {
+                            $items.Add("$($property.Name): $($property.Value)")
+                        }
+                    }
+                }
+            }
+            if ($items.Count -eq 0) { $items.Add('No se encontraron entradas en las claves Run consultadas.') }
+            return [pscustomobject]@{
+                Id = $Id; Status = 'OK'; Title = 'Análisis de programas de inicio'
+                Details = @($items)
+            }
+        }
         'PC-POWER-GUIDE' {
             return [pscustomobject]@{
                 Id = $Id; Status = 'MANUAL'; Title = 'Revisar plan de energía del PC'
