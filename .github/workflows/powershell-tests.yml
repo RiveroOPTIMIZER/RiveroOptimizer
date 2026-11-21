@@ -28,4 +28,4 @@ jobs:
       - name: Run device profile tests
         shell: pwsh
         run: |
-          Invoke-Pester -Path ./tests/DeviceProfile.Tests.ps1 -CI
+          Invoke-Pester -Path ./tests -CI
