@@ -75,6 +75,20 @@
       "requiresAdmin": false
     },
     {
+      "id": "PC-FILE-EXTENSIONS",
+      "name": "Mostrar extensiones de archivo",
+      "category": "Personalización",
+      "subcategory": "Explorador de archivos",
+      "description": "Muestra extensiones como .txt y .png. Guarda el valor anterior para poder deshacerlo.",
+      "devices": [
+        "PC"
+      ],
+      "risk": "low",
+      "actionType": "reversible",
+      "defaultSelected": false,
+      "requiresAdmin": false
+    },
+    {
       "id": "PC-GAME-MODE",
       "name": "Activar Modo Juego de Windows",
       "category": "Rendimiento",
