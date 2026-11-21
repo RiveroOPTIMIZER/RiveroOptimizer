@@ -8,7 +8,7 @@ Add-Type -AssemblyName WindowsBase
 [xml]$xaml = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Rivero Optimizer | Preview" Height="790" Width="1420"
+        Title="Rivero Optimizer" Height="790" Width="1420"
         MinHeight="650" MinWidth="1050" WindowStartupLocation="CenterScreen"
         Background="#0B0F0C" Foreground="#F3F4F6" FontFamily="Segoe UI">
   <Window.Resources>
@@ -147,10 +147,16 @@ $status = $window.FindName('StatusText')
 $mode = $window.FindName('DeviceMode')
 $search = $window.FindName('SearchBox')
 $modulePath = Join-Path $PSScriptRoot 'Modules/SafeActions.ps1'
-if (-not (Test-Path -LiteralPath $modulePath -PathType Leaf)) {
-  throw "No se encontró el módulo seguro: $modulePath"
+$catalogModulePath = Join-Path $PSScriptRoot 'Modules/TweakCatalog.ps1'
+$catalogPath = Join-Path $PSScriptRoot 'Catalog/shared/safe-starter.json'
+foreach ($requiredPath in @($modulePath, $catalogModulePath, $catalogPath)) {
+  if (-not (Test-Path -LiteralPath $requiredPath -PathType Leaf)) {
+    throw "Falta un componente necesario de Rivero Optimizer: $requiredPath"
+  }
 }
 . $modulePath
+. $catalogModulePath
+$catalog = Import-RiveroTweakCatalog -Path $catalogPath
 $undo.IsEnabled = $false
 $undo.Content = 'Sin cambios para deshacer'
 $run.Add_Click({
@@ -169,8 +175,10 @@ $run.Add_Click({
     foreach ($entry in $actionMap.GetEnumerator()) {
       $control = $window.FindName($entry.Key)
       if ($control -and $control.IsChecked -and $control.Visibility -eq 'Visible') {
+        $catalogItem = Get-RiveroTweakById -Id $entry.Value -Catalog $catalog
+        if ($null -eq $catalogItem) { throw "El ajuste $($entry.Value) no existe en el catálogo validado." }
         $result = Invoke-RiveroTweak -Id $entry.Value -Mode $selectedMode
-        $output.Add("[$($result.Status)] $($result.Title)")
+        $output.Add("[$($result.Status)] $($catalogItem.name)")
         foreach ($line in $result.Details) { $output.Add("  • $line") }
         $output.Add('')
       }
@@ -211,4 +219,21 @@ function Set-DeviceVisibility {
 $mode.Add_SelectionChanged({ if ($mode.SelectedItem) { Set-DeviceVisibility } })
 $search.Add_TextChanged({ Set-DeviceVisibility })
 Set-DeviceVisibility
+# Solo se habilitan controles que tienen una acción real y validada en el catálogo.
+$supportedControlNames = @(
+  'TweakOsInfo',
+  'TweakHardwareInfo',
+  'TweakPowerInfo',
+  'TweakBatteryGuide',
+  'TweakThermalGuide',
+  'TweakPcPowerGuide',
+  'TweakSecurityGuide'
+)
+foreach ($control in (Get-VisualChildren $window)) {
+  if ($control -is [System.Windows.Controls.CheckBox] -and $control.Name -notin $supportedControlNames) {
+    $control.IsChecked = $false
+    $control.IsEnabled = $false
+    $control.ToolTip = 'En desarrollo: todavía no ejecuta ninguna acción.'
+  }
+}
 $window.ShowDialog() | Out-Null
