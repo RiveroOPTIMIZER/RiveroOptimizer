@@ -47,6 +47,20 @@
       "requiresAdmin": false
     },
     {
+      "id": "PC-STARTUP-AUDIT",
+      "name": "Analizar programas de inicio",
+      "category": "Rendimiento",
+      "subcategory": "Inicio",
+      "description": "Lista las entradas de inicio del registro para identificar programas que podrían ralentizar el arranque. No desactiva nada.",
+      "devices": [
+        "PC"
+      ],
+      "risk": "low",
+      "actionType": "diagnostic",
+      "defaultSelected": false,
+      "requiresAdmin": false
+    },
+    {
       "id": "PC-POWER-GUIDE",
       "name": "Revisar plan de energía del PC",
       "category": "Rendimiento",
