@@ -75,6 +75,20 @@
       "requiresAdmin": false
     },
     {
+      "id": "PC-GAME-MODE",
+      "name": "Activar Modo Juego de Windows",
+      "category": "Rendimiento",
+      "subcategory": "Juegos",
+      "description": "Activa el Modo Juego para el usuario actual. Guarda el estado anterior y permite deshacerlo.",
+      "devices": [
+        "PC"
+      ],
+      "risk": "low",
+      "actionType": "reversible",
+      "defaultSelected": false,
+      "requiresAdmin": false
+    },
+    {
       "id": "SECURITY-PRESERVE",
       "name": "Conservar protecciones de Windows",
       "category": "Seguridad",
