@@ -38,11 +38,8 @@ Add-Type -AssemblyName WindowsBase
         </Grid.ColumnDefinitions>
         <TextBlock Text="◆" Foreground="#22C55E" FontSize="28" VerticalAlignment="Center" Margin="5,0,18,0"/>
         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-          <Button Content="Instalar" Width="105"/>
           <Button Content="Ajustes" Width="105" Background="#22C55E"/>
           <Button Content="Configuración" Width="125"/>
-          <Button Content="Actualizaciones" Width="125"/>
-          <Button Content="Crear Windows 11" Width="145"/>
         </StackPanel>
         <TextBox x:Name="SearchBox" Grid.Column="2" Width="230" Height="27" Margin="10,0"
                  VerticalContentAlignment="Center" Background="#0B0F0C" Foreground="#F3F4F6"
@@ -122,10 +119,7 @@ Add-Type -AssemblyName WindowsBase
           </Grid>
         </Grid>
       </TabItem>
-      <TabItem Header="Instalar"><TextBlock Text="Catálogo de aplicaciones: integración pendiente." Margin="20"/></TabItem>
       <TabItem Header="Configuración"><TextBlock Text="Configuración de Windows: integración pendiente." Margin="20"/></TabItem>
-      <TabItem Header="Actualizaciones"><TextBlock Text="Administración de actualizaciones: integración pendiente." Margin="20"/></TabItem>
-      <TabItem Header="Crear Windows 11"><TextBlock Text="Creador de medios: integración pendiente." Margin="20"/></TabItem>
     </TabControl>
   </DockPanel>
 </Window>
