@@ -138,6 +138,7 @@ $run = $window.FindName('RunButton')
 $undo = $window.FindName('UndoButton')
 $status = $window.FindName('StatusText')
 $mode = $window.FindName('DeviceMode')
+$search = $window.FindName('SearchBox')
 $run.Add_Click({ [System.Windows.MessageBox]::Show('Esta vista previa solo muestra la interfaz. Todavía no aplica ajustes.','Rivero Optimizer') | Out-Null })
 $undo.Add_Click({ [System.Windows.MessageBox]::Show('No hay cambios que revertir en esta vista previa.','Rivero Optimizer') | Out-Null })
 function Get-VisualChildren([System.Windows.DependencyObject]$Parent) {
@@ -153,11 +154,15 @@ function Set-DeviceVisibility {
   foreach ($control in (Get-VisualChildren $window)) {
     if ($control -is [System.Windows.Controls.CheckBox] -and $control.Tag) {
       $target = [string]$control.Tag
-      $control.Visibility = if ($target -eq 'BOTH' -or $target -eq $selected.ToUpperInvariant()) { 'Visible' } else { 'Collapsed' }
+      $deviceMatch = ($target -eq 'BOTH' -or $target -eq $selected.ToUpperInvariant())
+      $query = [string]$search.Text
+      $searchMatch = [string]::IsNullOrWhiteSpace($query) -or ([string]$control.Content).IndexOf($query, [System.StringComparison]::OrdinalIgnoreCase) -ge 0
+      $control.Visibility = if ($deviceMatch -and $searchMatch) { 'Visible' } else { 'Collapsed' }
     }
   }
   $status.Text = "Perfil ${selected}: ajustes compartidos y específicos. Vista previa; sin cambios en Windows."
 }
 $mode.Add_SelectionChanged({ if ($mode.SelectedItem) { Set-DeviceVisibility } })
+$search.Add_TextChanged({ Set-DeviceVisibility })
 Set-DeviceVisibility
 $window.ShowDialog() | Out-Null
