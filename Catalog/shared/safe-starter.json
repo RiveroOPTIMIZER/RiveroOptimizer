@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "catalogName": "Rivero Safe Starter Catalog",
   "language": "es",
-  "note": "Catálogo inicial de diagnóstico y recomendaciones manuales. No ejecuta cambios del sistema.",
+  "note": "Catálogo de diagnósticos, guías manuales y preferencias reversibles permitidas.",
   "tweaks": [
     {
       "id": "SYS-OS-INFO",
