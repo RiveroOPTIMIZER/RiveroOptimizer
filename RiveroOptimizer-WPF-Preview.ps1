@@ -1,5 +1,5 @@
 ﻿# Rivero Optimizer - WPF UI preview
-# Windows PowerShell 5.1+. UI-only: no Windows settings are changed.
+# Windows PowerShell 5.1+. Includes read-only diagnostics and one reversible Game Mode preference.
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName PresentationFramework
 Add-Type -AssemblyName PresentationCore
@@ -101,7 +101,7 @@ Add-Type -AssemblyName WindowsBase
                 <CheckBox Content="Modo oscuro de Windows" IsChecked="True" Tag="BOTH"/>
                 <CheckBox Content="Mostrar extensiones de archivo" IsChecked="True" Tag="BOTH"/>
                 <CheckBox Content="Mostrar archivos ocultos" IsChecked="True" Tag="BOTH"/>
-                <CheckBox Content="Modo Juego" IsChecked="True" Tag="BOTH"/>
+                <CheckBox Content="Activar Modo Juego de Windows (reversible)" Name="TweakGameMode" IsChecked="False" Tag="BOTH"/>
                 <CheckBox Content="Revisar plan de energía de escritorio" Tag="PC"/>
                 <CheckBox Content="Revisar inicio rápido y estado de energía" Tag="PC"/>
                 <CheckBox Content="Desactivar sugerencias de pantalla de bloqueo" Tag="BOTH"/>
@@ -138,14 +138,16 @@ $status = $window.FindName('StatusText')
 $search = $window.FindName('SearchBox')
 $modulePath = Join-Path $PSScriptRoot 'Modules/SafeActions.ps1'
 $catalogModulePath = Join-Path $PSScriptRoot 'Modules/TweakCatalog.ps1'
+$reversibleModulePath = Join-Path $PSScriptRoot 'Modules/ReversibleActions.ps1'
 $catalogPath = Join-Path $PSScriptRoot 'Catalog/shared/safe-starter.json'
-foreach ($requiredPath in @($modulePath, $catalogModulePath, $catalogPath)) {
+foreach ($requiredPath in @($modulePath, $catalogModulePath, $reversibleModulePath, $catalogPath)) {
   if (-not (Test-Path -LiteralPath $requiredPath -PathType Leaf)) {
     throw "Falta un componente necesario de Rivero Optimizer: $requiredPath"
   }
 }
 . $modulePath
 . $catalogModulePath
+. $reversibleModulePath
 $catalog = Import-RiveroTweakCatalog -Path $catalogPath
 $undo.IsEnabled = $false
 $undo.Content = 'Sin cambios para deshacer'
@@ -161,6 +163,23 @@ $run.Add_Click({
       TweakSecurityGuide = 'SECURITY-PRESERVE'
     }
     $output = New-Object System.Collections.Generic.List[string]
+    $gameModeControl = $window.FindName('TweakGameMode')
+    if ($gameModeControl.IsChecked) {
+      $answer = [System.Windows.MessageBox]::Show(
+        'Se activará el Modo Juego para tu usuario. Rivero guardará los valores anteriores para poder deshacer el cambio. ¿Continuar?',
+        'Confirmar optimización',
+        [System.Windows.MessageBoxButton]::YesNo,
+        [System.Windows.MessageBoxImage]::Question
+      )
+      if ($answer -eq [System.Windows.MessageBoxResult]::Yes) {
+        $gameResult = Invoke-RiveroReversibleTweak -Id 'PC-GAME-MODE' -Confirm:$false
+        $output.Add("[$($gameResult.Status)] Activar Modo Juego de Windows")
+        foreach ($line in $gameResult.Details) { $output.Add("  • $line") }
+        $gameModeControl.IsChecked = $false
+        $undo.IsEnabled = $true
+        $undo.Content = 'Deshacer Modo Juego'
+      }
+    }
     foreach ($entry in $actionMap.GetEnumerator()) {
       $control = $window.FindName($entry.Key)
       if ($control -and $control.IsChecked -and $control.Visibility -eq 'Visible') {
@@ -174,7 +193,7 @@ $run.Add_Click({
     }
     if ($output.Count -eq 0) { $output.Add('Selecciona al menos un diagnóstico o una guía disponible para este dispositivo.') }
     [System.Windows.MessageBox]::Show(($output -join [Environment]::NewLine), 'Rivero Optimizer') | Out-Null
-    $status.Text = "Listo: se ejecutaron diagnósticos y guías para PC. No se modificó Windows."
+    $status.Text = if (Test-Path -LiteralPath (Get-RiveroGameModeBackupPath)) { 'Listo: diagnóstico completado. Modo Juego tiene copia de seguridad para deshacer.' } else { 'Listo: diagnósticos y guías completados. No se modificó Windows.' }
   }
   catch {
     [System.Windows.MessageBox]::Show($_.Exception.Message, 'Rivero Optimizer - Error') | Out-Null
@@ -182,7 +201,24 @@ $run.Add_Click({
   }
 })
 $undo.Add_Click({
-  [System.Windows.MessageBox]::Show('Esta versión solo ejecuta diagnósticos y guías manuales. No hay cambios del sistema que revertir.', 'Rivero Optimizer') | Out-Null
+  try {
+    $backupPath = Get-RiveroGameModeBackupPath
+    if (-not (Test-Path -LiteralPath $backupPath -PathType Leaf)) {
+      [System.Windows.MessageBox]::Show('No hay cambios reversibles de Rivero para deshacer.', 'Rivero Optimizer') | Out-Null
+      return
+    }
+    $answer = [System.Windows.MessageBox]::Show('Se restaurará la configuración anterior del Modo Juego. ¿Continuar?', 'Confirmar deshacer', [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
+    if ($answer -eq [System.Windows.MessageBoxResult]::Yes) {
+      $result = Undo-RiveroReversibleTweak -Id 'PC-GAME-MODE' -Confirm:$false
+      [System.Windows.MessageBox]::Show(($result.Details -join [Environment]::NewLine), 'Rivero Optimizer') | Out-Null
+      $undo.IsEnabled = $false
+      $undo.Content = 'Sin cambios para deshacer'
+      $status.Text = 'Se restauró el estado anterior del Modo Juego.'
+    }
+  }
+  catch {
+    [System.Windows.MessageBox]::Show($_.Exception.Message, 'Rivero Optimizer - Error') | Out-Null
+  }
 })
 function Get-VisualChildren([System.Windows.DependencyObject]$Parent) {
   if ($null -eq $Parent) { return }
@@ -213,6 +249,7 @@ $supportedControlNames = @(
   'TweakHardwareInfo',
   'TweakPowerInfo',
   'TweakStartupAudit',
+  'TweakGameMode',
   'TweakPcPowerGuide',
   'TweakSecurityGuide'
 )
