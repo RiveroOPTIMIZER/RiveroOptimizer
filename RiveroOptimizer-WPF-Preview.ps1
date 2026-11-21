@@ -39,7 +39,7 @@ Add-Type -AssemblyName WindowsBase
         <TextBlock Text="◆" Foreground="#22C55E" FontSize="28" VerticalAlignment="Center" Margin="5,0,18,0"/>
         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
           <Button Content="Ajustes" Width="105" Background="#22C55E"/>
-          <Button Content="Configuración" Width="125"/>
+          <Button Content="Info" Width="125"/>
         </StackPanel>
         <TextBox x:Name="SearchBox" Grid.Column="2" Width="230" Height="27" Margin="10,0"
                  VerticalContentAlignment="Center" Background="#0B0F0C" Foreground="#F3F4F6"
@@ -119,7 +119,14 @@ Add-Type -AssemblyName WindowsBase
           </Grid>
         </Grid>
       </TabItem>
-      <TabItem Header="Configuración"><TextBlock Text="Configuración de Windows: integración pendiente." Margin="20"/></TabItem>
+      <TabItem Header="Info">
+        <StackPanel Margin="24" Background="#111813">
+          <TextBlock Text="RIVERO OPTIMIZER" Foreground="#22C55E" FontSize="24" FontWeight="Bold" Margin="12,14,12,8"/>
+          <TextBlock Text="Redes y contacto" Foreground="#86EFAC" FontSize="15" Margin="12,4"/>
+          <TextBlock Text="TikTok: davii.cf" FontSize="17" Margin="12,6"/>
+          <TextBlock Text="Discord: desgastarte" FontSize="17" Margin="12,6"/>
+        </StackPanel>
+      </TabItem>
     </TabControl>
   </DockPanel>
 </Window>
