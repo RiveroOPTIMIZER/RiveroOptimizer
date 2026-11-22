@@ -80,10 +80,26 @@ Add-Type -AssemblyName WindowsBase
           <Border Grid.Row="0" Background="#111813" BorderBrush="#26352A" BorderThickness="1"
                   CornerRadius="5" Padding="10" Margin="0,4,0,10">
             <DockPanel>
-              <TextBlock Text="AJUSTES DEL SISTEMA" Foreground="#86EFAC" FontWeight="Bold"
-                         VerticalAlignment="Center" Margin="3,0,12,0"/>
-              <TextBlock Text="Busca, selecciona y ejecuta únicamente las opciones habilitadas."
-                         Foreground="#9CA3AF" VerticalAlignment="Center" FontSize="12"/>
+              <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="AJUSTES DEL SISTEMA" Foreground="#86EFAC" FontWeight="Bold"
+                           VerticalAlignment="Center" Margin="3,0,12,0"/>
+                <TextBlock Text="Perfil:" Foreground="#9CA3AF" VerticalAlignment="Center" Margin="8,0,5,0"/>
+                <ComboBox x:Name="CategoryBox" Width="155" Height="26" SelectedIndex="0"
+                          Background="#17221A" Foreground="#111813">
+                  <ComboBoxItem Content="Standard"/>
+                  <ComboBoxItem Content="Minimal"/>
+                  <ComboBoxItem Content="Advanced"/>
+                  <ComboBoxItem Content="Desktop"/>
+                  <ComboBoxItem Content="Privacy"/>
+                  <ComboBoxItem Content="Performance"/>
+                  <ComboBoxItem Content="Gaming"/>
+                  <ComboBoxItem Content="Network"/>
+                  <ComboBoxItem Content="Power"/>
+                  <ComboBoxItem Content="Windows"/>
+                </ComboBox>
+                <TextBlock Text="  Busca y selecciona opciones habilitadas." Foreground="#9CA3AF"
+                           VerticalAlignment="Center" FontSize="12"/>
+              </StackPanel>
             </DockPanel>
           </Border>
           <Grid Grid.Row="1">
@@ -370,20 +386,42 @@ function Get-VisualChildren([System.Windows.DependencyObject]$Parent) {
     Get-VisualChildren $child
   }
 }
+$categoryBox = $window.FindName('CategoryBox')
+function Get-RiveroUiCategory([System.Windows.Controls.CheckBox]$Control) {
+  $name = [string]$Control.Name
+  $label = [string]$Control.Content
+  if ($name -in @('TweakOsInfo','TweakHardwareInfo')) { return 'Windows' }
+  if ($name -eq 'TweakPowerInfo' -or $name -eq 'TweakPcPowerGuide' -or $label -match 'energía|potencia') { return 'Power' }
+  if ($name -eq 'TweakStartupAudit' -or $label -match 'inicio|rendimiento|segundo plano') { return 'Performance' }
+  if ($name -eq 'TweakGameMode' -or $label -match 'juego|gaming') { return 'Gaming' }
+  if ($name -eq 'TweakSecurityGuide' -or $label -match 'privacidad|seguridad|protecciones') { return 'Privacy' }
+  if ($label -match 'IPv6|red|network') { return 'Network' }
+  if ($name -in @('TweakDarkMode','TweakFileExtensions','TweakHiddenFiles') -or $label -match 'mouse|barra de tareas|pantalla|carpetas|extensiones') { return 'Desktop' }
+  return 'Advanced'
+}
 function Set-DeviceVisibility {
   $selected = 'PC'
+  $profile = [string]$categoryBox.SelectedItem.Content
   foreach ($control in (Get-VisualChildren $window)) {
     if ($control -is [System.Windows.Controls.CheckBox] -and $control.Tag) {
       $target = [string]$control.Tag
       $deviceMatch = ($target -eq 'BOTH' -or $target -eq $selected.ToUpperInvariant())
       $query = [string]$search.Text
       $searchMatch = [string]::IsNullOrWhiteSpace($query) -or ([string]$control.Content).IndexOf($query, [System.StringComparison]::OrdinalIgnoreCase) -ge 0
-      $control.Visibility = if ($deviceMatch -and $searchMatch) { 'Visible' } else { 'Collapsed' }
+      $uiCategory = Get-RiveroUiCategory -Control $control
+      $categoryMatch = switch ($profile) {
+        'Standard' { $control.Name -in @('TweakOsInfo','TweakHardwareInfo','TweakPowerInfo','TweakStartupAudit','TweakGameMode','TweakDarkMode','TweakFileExtensions','TweakHiddenFiles','TweakPcPowerGuide','TweakSecurityGuide') }
+        'Minimal' { $control.Name -in @('TweakOsInfo','TweakHardwareInfo','TweakPowerInfo','TweakSecurityGuide') }
+        'Advanced' { $true }
+        default { $uiCategory -eq $profile }
+      }
+      $control.Visibility = if ($deviceMatch -and $searchMatch -and $categoryMatch) { 'Visible' } else { 'Collapsed' }
     }
   }
-  $status.Text = "Perfil PC: ajustes disponibles para ordenador de escritorio. Interfaz en español; los cambios requieren confirmación."
+  $status.Text = "Perfil PC · $profile · Las opciones en desarrollo están deshabilitadas."
 }
 $search.Add_TextChanged({ Set-DeviceVisibility })
+$categoryBox.Add_SelectionChanged({ Set-DeviceVisibility })
 Set-DeviceVisibility
 # Solo se habilitan controles que tienen una acción real y validada en el catálogo.
 $supportedControlNames = @(
