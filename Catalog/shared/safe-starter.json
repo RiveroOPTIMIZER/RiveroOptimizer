@@ -115,6 +115,20 @@
       "actionType": "manual",
       "defaultSelected": true,
       "requiresAdmin": false
+    },
+    {
+      "id": "PC-DARK-MODE",
+      "name": "Activar modo oscuro de Windows",
+      "category": "Personalización",
+      "subcategory": "Apariencia",
+      "description": "Activa el tema oscuro para Windows y aplicaciones del usuario actual. Guarda los valores anteriores para poder deshacer el cambio.",
+      "devices": [
+        "PC"
+      ],
+      "risk": "low",
+      "actionType": "reversible",
+      "defaultSelected": false,
+      "requiresAdmin": false
     }
   ]
 }
