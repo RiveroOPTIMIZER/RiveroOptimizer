@@ -33,4 +33,4 @@ No se desactivan de forma automática Microsoft Defender, Firewall, UAC, BitLock
 
 ## Estado actual
 
-La vista previa conecta diagnósticos de solo lectura y tres preferencias reversibles del usuario actual: Modo Juego, extensiones de archivo y tema oscuro. Las opciones que aún no tienen implementación permanecen deshabilitadas. El proyecto está limitado a PC de escritorio; la integración completa del diseño WinUtil y las pruebas en Windows siguen pendientes.
+La vista previa conecta diagnósticos de solo lectura y cuatro preferencias reversibles del usuario actual: Modo Juego, extensiones de archivo, tema oscuro y visibilidad de archivos ocultos. Las opciones que aún no tienen implementación permanecen deshabilitadas. El proyecto está limitado a PC de escritorio; la integración completa del diseño WinUtil y las pruebas en Windows siguen pendientes.
