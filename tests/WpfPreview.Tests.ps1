@@ -41,7 +41,7 @@ Describe 'Rivero WPF preview integrity' {
     }
 
     It 'keeps the application limited to the PC profile' {
-        $script:UiSource | Should -Match "\$selectedMode = 'PC'"
+        $script:UiSource | Should -Match '\$selectedMode = ''PC'''
         $script:UiSource | Should -Not -Match 'Header="Laptop"'
     }
 }
