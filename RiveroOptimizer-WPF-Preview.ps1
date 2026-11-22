@@ -103,7 +103,7 @@ Add-Type -AssemblyName WindowsBase
             <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
               <StackPanel Background="#111813" Margin="5,0,0,0">
                 <TextBlock Text="Personalizar preferencias" Foreground="#86EFAC" FontFamily="Consolas" FontSize="15" Margin="10,8"/>
-                <CheckBox Content="Modo oscuro de Windows" IsChecked="True" Tag="BOTH"/>
+                <CheckBox Content="Activar modo oscuro de Windows (reversible)" Name="TweakDarkMode" IsChecked="False" Tag="PC"/>
                 <CheckBox Content="Mostrar extensiones de archivo (reversible)" Name="TweakFileExtensions" Tag="BOTH"/>
                 <CheckBox Content="Mostrar archivos ocultos" IsChecked="True" Tag="BOTH"/>
                 <CheckBox Content="Activar Modo Juego de Windows (reversible)" Name="TweakGameMode" IsChecked="False" Tag="BOTH"/>
@@ -191,7 +191,8 @@ foreach ($requiredPath in @($modulePath, $catalogModulePath, $reversibleModulePa
 $catalog = Import-RiveroTweakCatalog -Path $catalogPath
 $existingGameModeBackup = Get-RiveroGameModeBackupPath
 $existingExtensionsBackup = Get-RiveroFileExtensionsBackupPath
-$undo.IsEnabled = (Test-Path -LiteralPath $existingGameModeBackup -PathType Leaf) -or (Test-Path -LiteralPath $existingExtensionsBackup -PathType Leaf)
+$existingDarkModeBackup = Get-RiveroDarkModeBackupPath
+$undo.IsEnabled = (Test-Path -LiteralPath $existingGameModeBackup -PathType Leaf) -or (Test-Path -LiteralPath $existingExtensionsBackup -PathType Leaf) -or (Test-Path -LiteralPath $existingDarkModeBackup -PathType Leaf)
 $undo.Content = if ($undo.IsEnabled) { 'Deshacer cambios' } else { 'Sin cambios para deshacer' }
 $run.Add_Click({
   try {
@@ -220,6 +221,25 @@ $run.Add_Click({
         $output.Add("[$($extensionsResult.Status)] Mostrar extensiones de archivo")
         foreach ($line in $extensionsResult.Details) { $output.Add("  • $line") }
         $extensionsControl.IsChecked = $false
+        $undo.IsEnabled = $true
+        $undo.Content = 'Deshacer cambios'
+      }
+    }
+    $darkModeControl = $window.FindName('TweakDarkMode')
+    if ($darkModeControl.IsChecked) {
+      $answer = [System.Windows.MessageBox]::Show(
+        'Se activará el modo oscuro para Windows y aplicaciones del usuario actual. Rivero guardará los valores anteriores para poder deshacerlos. ¿Continuar?',
+        'Confirmar personalización',
+        [System.Windows.MessageBoxButton]::YesNo,
+        [System.Windows.MessageBoxImage]::Question
+      )
+      if ($answer -eq [System.Windows.MessageBoxResult]::Yes) {
+        $darkCatalogItem = Get-RiveroTweakById -Id 'PC-DARK-MODE' -Catalog $catalog
+        if ($null -eq $darkCatalogItem -or $darkCatalogItem.actionType -ne 'reversible') { throw 'El modo oscuro no está validado en el catálogo.' }
+        $darkResult = Invoke-RiveroDarkModeTweak -Confirm:$false
+        $output.Add("[$($darkResult.Status)] Activar modo oscuro de Windows")
+        foreach ($line in $darkResult.Details) { $output.Add("  • $line") }
+        $darkModeControl.IsChecked = $false
         $undo.IsEnabled = $true
         $undo.Content = 'Deshacer cambios'
       }
@@ -256,7 +276,8 @@ $run.Add_Click({
     }
     if ($output.Count -eq 0) { $output.Add('Selecciona al menos un diagnóstico o una guía disponible para este dispositivo.') }
     [System.Windows.MessageBox]::Show(($output -join [Environment]::NewLine), 'Rivero Optimizer') | Out-Null
-    $status.Text = if (Test-Path -LiteralPath (Get-RiveroGameModeBackupPath)) { 'Listo: diagnóstico completado. Modo Juego tiene copia de seguridad para deshacer.' } else { 'Listo: diagnósticos y guías completados. No se modificó Windows.' }
+    $hasReversibleBackup = (Test-Path -LiteralPath (Get-RiveroGameModeBackupPath)) -or (Test-Path -LiteralPath (Get-RiveroFileExtensionsBackupPath)) -or (Test-Path -LiteralPath (Get-RiveroDarkModeBackupPath))
+    $status.Text = if ($hasReversibleBackup) { 'Listo: cambios reversibles guardados para poder deshacer.' } else { 'Listo: diagnósticos y guías completados.' }
   }
   catch {
     [System.Windows.MessageBox]::Show($_.Exception.Message, 'Rivero Optimizer - Error') | Out-Null
@@ -267,15 +288,21 @@ $undo.Add_Click({
   try {
     $gameBackupPath = Get-RiveroGameModeBackupPath
     $extensionsBackupPath = Get-RiveroFileExtensionsBackupPath
+    $darkModeBackupPath = Get-RiveroDarkModeBackupPath
     $hasGameBackup = Test-Path -LiteralPath $gameBackupPath -PathType Leaf
     $hasExtensionsBackup = Test-Path -LiteralPath $extensionsBackupPath -PathType Leaf
-    if (-not ($hasGameBackup -or $hasExtensionsBackup)) {
+    $hasDarkModeBackup = Test-Path -LiteralPath $darkModeBackupPath -PathType Leaf
+    if (-not ($hasGameBackup -or $hasExtensionsBackup -or $hasDarkModeBackup)) {
       [System.Windows.MessageBox]::Show('No hay cambios reversibles de Rivero para deshacer.', 'Rivero Optimizer') | Out-Null
       return
     }
-    $answer = [System.Windows.MessageBox]::Show('Se restaurarán los ajustes reversibles que Rivero haya aplicado (Modo Juego y/o extensiones). ¿Continuar?', 'Confirmar deshacer', [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
+    $answer = [System.Windows.MessageBox]::Show('Se restaurarán los ajustes reversibles que Rivero haya aplicado (Modo Juego, extensiones y/o modo oscuro). ¿Continuar?', 'Confirmar deshacer', [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
     if ($answer -eq [System.Windows.MessageBoxResult]::Yes) {
       $undoDetails = New-Object System.Collections.Generic.List[string]
+      if ($hasDarkModeBackup) {
+        $result = Undo-RiveroDarkModeTweak -Confirm:$false
+        foreach ($line in $result.Details) { $undoDetails.Add($line) }
+      }
       if ($hasGameBackup) {
         $result = Undo-RiveroReversibleTweak -Id 'PC-GAME-MODE' -Confirm:$false
         foreach ($line in $result.Details) { $undoDetails.Add($line) }
