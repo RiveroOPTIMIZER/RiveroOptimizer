@@ -45,13 +45,18 @@ These files are a source snapshot only. The runtime is **not yet complete or run
 7. Preserve the MIT copyright and permission notices with copied substantial portions. Clearly distinguish Rivero-authored modifications from upstream code.
 8. Do not publish a runnable build until dependency review, PowerShell tests, and Windows PowerShell 5.1/WPF smoke tests pass.
 
+## Dependency audit
+
+A source/build dependency audit is recorded in [DEPENDENCY-AUDIT.md](DEPENDENCY-AUDIT.md). It confirms that upstream WinUtil compiles a single script from the launcher, all function files, eight JSON configuration files, 239 app icons, the full XAML, an unattended-setup XML resource, and the main orchestration script. The complete upstream runtime is broader than Rivero's agreed tweaks-only scope, so it must not be copied and activated wholesale. In particular, the upstream launcher can download and execute the latest release script as a fallback; Rivero must not use that path.
+
 ## Current status
 
 - [x] Pin a specific upstream commit.
 - [x] Vendor the original launcher, main orchestration script, WPF XAML, and MIT license as a reviewable source snapshot.
 - [x] Keep Sophia Script and Information as separate UI sections in the Rivero preview.
-- [ ] Vendor and audit the complete set of runtime dependencies.
-- [ ] Adapt the upstream WPF XAML to Rivero's black/green theme and Spanish labels.
+- [x] Audit the pinned upstream build model and runtime dependency inventory; document exclusions for Rivero's narrower scope.
+- [ ] Selectively vendor/adapt only the Tweaks UI dependencies needed by Rivero.
+- [ ] Extract and adapt the upstream Tweaks page XAML to Rivero's black/green theme and Spanish labels.
 - [ ] Connect only reviewed PC-safe actions to the UI.
 - [ ] Integrate Sophia Script separately with its own dependency and action review.
 - [ ] Run automated tests and Windows PowerShell 5.1/WPF smoke tests.
