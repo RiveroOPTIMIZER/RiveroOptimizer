@@ -1,0 +1,492 @@
+{
+  "schemaVersion": 1,
+  "catalogName": "Catálogo de referencia de ajustes WinUtil",
+  "source": "Chris Titus Tech WinUtil",
+  "sourceUrl": "https://github.com/ChrisTitusTech/winutil/blob/main/config/tweaks.json",
+  "note": "Listado de referencia. Los ajustes no se ejecutan desde este catálogo. Cada acción debe implementarse y revisarse por separado en Rivero Optimizer.",
+  "tweaks": [
+    {
+      "id": "WPFTweaksActivity",
+      "name": "Activity History - Disable",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFTweaksHiber",
+      "name": "Hibernation - Disable",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFTweaksWidget",
+      "name": "Widgets - Remove",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFTweaksRevertStartMenu",
+      "name": "Start Menu Previous Layout - Enable",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFTweaksDisableStoreSearch",
+      "name": "Microsoft Store Recommended Search Results - Disable",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFTweaksLocation",
+      "name": "Location Tracking - Disable",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFTweaksServices",
+      "name": "Services - Set to Manual",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFTweaksSvcHostSplitting",
+      "name": "svchost.exe Splitting - Disable",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksBraveDebloat",
+      "name": "Brave Browser - Debloat",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksDisableWarningForUnsignedRdp",
+      "name": "RDP Unsigned File Warnings - Disable",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksEdgeDebloat",
+      "name": "Microsoft Edge - Debloat",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksConsumerFeatures",
+      "name": "ConsumerFeatures - Disable",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFTweaksTelemetry",
+      "name": "Telemetry - Disable",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFTweaksDeliveryOptimization",
+      "name": "Delivery Optimization - Disable",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFTweaksRemoveEdge",
+      "name": "Microsoft Edge - Remove",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksDisableBitLocker",
+      "name": "BitLocker - Disable",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFTweaksUTC",
+      "name": "Date & Time - Set Time to UTC",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksRemoveOneDrive",
+      "name": "Microsoft OneDrive - Remove",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksRemoveHomeAndGallery",
+      "name": "File Explorer Home and Gallery - Disable",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksDisplay",
+      "name": "Visual Effects - Set to Best Performance",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksReservedStorage",
+      "name": "Disable Reserved Storage",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksRestorePoint",
+      "name": "Restore Point - Create",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFTweaksEndTaskOnTaskbar",
+      "name": "End Task With Right Click - Enable",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFTweaksStorage",
+      "name": "Storage Sense - Disable",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksWindowsAI",
+      "name": "Windows AI - Disable And Remove",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksWPBT",
+      "name": "Windows Platform Binary Table (WPBT) - Disable",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFTweaksPreventDeviceMetadataFromNetwork",
+      "name": "Prevent Device Companion Apps",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFTweaksRazerBlock",
+      "name": "Razer Software Auto-Install - Disable",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksLogiBlock",
+      "name": "Logitech Download Assistant Auto-Install - Disable",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksDisableNotifications",
+      "name": "System Tray Notifications & Calendar - Disable",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksBlockAdobeNet",
+      "name": "Adobe URL Block List - Enable",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksRightClickMenu",
+      "name": "Right-Click Menu Previous Layout - Enable",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksDiskCleanup",
+      "name": "Disk Cleanup - Run",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFTweaksDeleteTempFiles",
+      "name": "Temporary Files - Remove",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFTweaksIPv46",
+      "name": "IPv6 - Set IPv4 as Preferred",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksTeredo",
+      "name": "Teredo - Disable",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksDisableSearchIndexing",
+      "name": "Windows Search Indexing - Disable",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksDisableIPv6",
+      "name": "IPv6 - Disable",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksDisableBGapps",
+      "name": "Background Apps - Disable",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFTweaksDisableExplorerAutoDiscovery",
+      "name": "File Explorer Automatic Folder Discovery - Disable",
+      "category": "Ajustes esenciales",
+      "sourceCategory": "Essential Tweaks",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleDetailedBSoD",
+      "name": "BSoD Verbose Mode",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleBatteryPercentage",
+      "name": "System Tray Battery Percentage",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleDarkMode",
+      "name": "Dark Theme for Windows",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Disponible en Rivero"
+    },
+    {
+      "id": "WPFToggleShowExt",
+      "name": "File Explorer File Extensions",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Disponible en Rivero"
+    },
+    {
+      "id": "WPFToggleHiddenFiles",
+      "name": "File Explorer Hidden Files",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Disponible en Rivero"
+    },
+    {
+      "id": "WPFToggleVerboseLogon",
+      "name": "Logon Verbose Mode",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleNewOutlook",
+      "name": "Microsoft Outlook New Version",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleScrollbars",
+      "name": "Scrollbars Always Visible",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFMultiplaneOverlay",
+      "name": "Multiplane Overlay",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleMouseAcceleration",
+      "name": "Mouse Acceleration",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleNumLock",
+      "name": "Num Lock on Startup",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleWindowSnapping",
+      "name": "Window Snapping",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleStandbyFix",
+      "name": "S0 Sleep Network Connectivity",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleS3Sleep",
+      "name": "S3 Sleep",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleHideSettingsHome",
+      "name": "Settings Home Page",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleBingSearch",
+      "name": "Start Menu Bing Search",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleLoginBlur",
+      "name": "Logon Screen Acrylic Blur",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleDisableLockscreen",
+      "name": "Lock Screen - Disable",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleStartMenuRecommendations",
+      "name": "Start Menu Recommendations",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleStickyKeys",
+      "name": "Sticky Keys",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleTaskbarAlignment",
+      "name": "Taskbar Centered Icons",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleTaskbarSearch",
+      "name": "Taskbar Search Icon",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleTaskView",
+      "name": "Taskbar Task View Icon",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleGameMode",
+      "name": "Game Mode",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFToggleLongPaths",
+      "name": "Enable Long Paths",
+      "category": "Preferencias de personalización",
+      "sourceCategory": "Customize Preferences",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFOOSUbutton",
+      "name": "O&O ShutUp10++ - Run",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFchangedns",
+      "name": "DNS - Set to:",
+      "category": "Ajustes avanzados (precaución)",
+      "sourceCategory": "z__Advanced Tweaks - CAUTION",
+      "status": "Bloqueado hasta revisión de seguridad"
+    },
+    {
+      "id": "WPFAddUltPerf",
+      "name": "Ultimate Performance Profile - Enable",
+      "category": "Planes de rendimiento (solo PC)",
+      "sourceCategory": "Performance Plans - NOT FOR LAPTOPS",
+      "status": "Pendiente de implementación"
+    },
+    {
+      "id": "WPFRemoveUltPerf",
+      "name": "Ultimate Performance Profile - Disable",
+      "category": "Planes de rendimiento (solo PC)",
+      "sourceCategory": "Performance Plans - NOT FOR LAPTOPS",
+      "status": "Pendiente de implementación"
+    }
+  ]
+}
