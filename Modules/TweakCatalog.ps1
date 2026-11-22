@@ -44,7 +44,7 @@ function Import-RiveroTweakCatalog {
         }
 
         foreach ($device in @($tweak.devices)) {
-            if ($device -notin @('PC', 'LAPTOP', 'BOTH')) {
+            if ($device -notin @('PC', 'BOTH')) {
                 throw "Compatibilidad de dispositivo no válida en $($tweak.id): $device"
             }
         }
@@ -57,7 +57,7 @@ function Get-RiveroAvailableTweaks {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [ValidateSet('PC', 'LAPTOP')]
+        [ValidateSet('PC')]
         [string]$Mode,
 
         [Parameter(Mandatory)]
