@@ -47,6 +47,15 @@ Describe 'Rivero WPF preview integrity' {
         $script:UiSource | Should -Match "'TweakDarkMode'"
     }
 
+    It 'does not show inactive preset buttons as available features' {
+        $script:XamlMatch.Groups[1].Value | Should -Not -Match 'Content="Estándar"'
+        $script:XamlMatch.Groups[1].Value | Should -Not -Match 'Content="Mínimo"'
+        $script:XamlMatch.Groups[1].Value | Should -Not -Match 'Content="Avanzado"'
+        $script:XamlMatch.Groups[1].Value | Should -Match 'AJUSTES ESENCIALES'
+        $script:XamlMatch.Groups[1].Value | Should -Match 'PERSONALIZACIÓN'
+        $script:XamlMatch.Groups[1].Value | Should -Match 'AJUSTES DEL SISTEMA'
+    }
+
     It 'keeps the application limited to the PC profile' {
         $script:UiSource | Should -Match '\$selectedMode = ''PC'''
         $script:UiSource | Should -Not -Match 'Header="Laptop"'
