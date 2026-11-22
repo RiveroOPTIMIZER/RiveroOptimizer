@@ -57,8 +57,9 @@ A source/build dependency audit is recorded in [DEPENDENCY-AUDIT.md](DEPENDENCY-
 - [x] Audit the pinned upstream build model and runtime dependency inventory; document exclusions for Rivero's narrower scope.
 - [ ] Selectively vendor/adapt only the Tweaks UI dependencies needed by Rivero.
 - [ ] Extract and adapt the upstream Tweaks page XAML to Rivero's black/green theme and Spanish labels.
-- [ ] Connect only reviewed PC-safe actions to the UI.
+- [x] Connect reviewed PC-safe diagnostics, manual guidance, and reversible preferences (Game Mode, file extensions, dark theme) to the UI.
+- [x] Remove the retired laptop-only profile, catalog, and tests; the product scope is PC only.
 - [ ] Integrate Sophia Script separately with its own dependency and action review.
 - [ ] Run automated tests and Windows PowerShell 5.1/WPF smoke tests.
 
-The existing `RiveroOptimizer-WPF-Preview.ps1` remains a development preview. The vendored upstream snapshot is not wired into it yet.
+The existing `RiveroOptimizer-WPF-Preview.ps1` remains a development preview. Its currently connected actions are Rivero-authored and do not execute the partial vendored upstream snapshot. The full WinUtil layout/runtime integration and Windows smoke tests remain pending.
