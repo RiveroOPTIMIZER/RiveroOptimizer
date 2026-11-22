@@ -22,8 +22,19 @@ Add-Type -AssemblyName WindowsBase
       <Setter Property="Margin" Value="3"/>
     </Style>
     <Style TargetType="CheckBox">
-      <Setter Property="Margin" Value="5,3"/>
+      <Setter Property="Margin" Value="6,4"/>
+      <Setter Property="Padding" Value="5,3"/>
       <Setter Property="Foreground" Value="#F3F4F6"/>
+      <Setter Property="FontSize" Value="13"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    <Style TargetType="GroupBox">
+      <Setter Property="Foreground" Value="#86EFAC"/>
+      <Setter Property="BorderBrush" Value="#26352A"/>
+      <Setter Property="Background" Value="#111813"/>
+      <Setter Property="Padding" Value="8"/>
+      <Setter Property="Margin" Value="5"/>
     </Style>
     <Style TargetType="TextBlock">
       <Setter Property="Foreground" Value="#F3F4F6"/>
@@ -66,19 +77,21 @@ Add-Type -AssemblyName WindowsBase
       <TabItem Header="Rivero Optimizer">
         <Grid Margin="8">
           <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-          <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,4,0,10">
-            <TextBlock Text="Selecciones recomendadas:" Foreground="#86EFAC" VerticalAlignment="Center" Margin="4,0,12,0"/>
-            <Button Content="Estándar" Width="150" IsEnabled="False" ToolTip="En desarrollo: los perfiles aún no están conectados."/>
-            <Button Content="Mínimo" Width="150" IsEnabled="False" ToolTip="En desarrollo: los perfiles aún no están conectados."/>
-            <Button Content="Avanzado" Width="150" IsEnabled="False" ToolTip="En desarrollo: los perfiles aún no están conectados."/>
-            <Button Content="Limpiar" Width="150" IsEnabled="False" ToolTip="En desarrollo: esta acción aún no está conectada."/>
-            <Button Content="Seleccionar instalados" Width="180" IsEnabled="False" ToolTip="En desarrollo: esta acción aún no está conectada."/>
-          </StackPanel>
+          <Border Grid.Row="0" Background="#111813" BorderBrush="#26352A" BorderThickness="1"
+                  CornerRadius="5" Padding="10" Margin="0,4,0,10">
+            <DockPanel>
+              <TextBlock Text="AJUSTES DEL SISTEMA" Foreground="#86EFAC" FontWeight="Bold"
+                         VerticalAlignment="Center" Margin="3,0,12,0"/>
+              <TextBlock Text="Busca, selecciona y ejecuta únicamente las opciones habilitadas."
+                         Foreground="#9CA3AF" VerticalAlignment="Center" FontSize="12"/>
+            </DockPanel>
+          </Border>
           <Grid Grid.Row="1">
             <Grid.ColumnDefinitions><ColumnDefinition Width="1.05*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
             <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="0,0,8,0">
               <StackPanel Background="#111813" Margin="0,0,5,0">
-                <TextBlock Text="Ajustes esenciales" Foreground="#86EFAC" FontFamily="Consolas" FontSize="15" Margin="10,8"/>
+                <TextBlock Text="AJUSTES ESENCIALES" Foreground="#86EFAC" FontFamily="Consolas" FontSize="14" FontWeight="Bold" Margin="10,10,10,6"/>
+                <Separator Background="#26352A" Margin="8,0,8,6"/>
                 <CheckBox Content="Desactivar historial de actividad" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
                 <CheckBox Content="Optimización de distribución: revisar configuración" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
                 <CheckBox Content="Ejecutar limpieza de disco" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
@@ -92,7 +105,8 @@ Add-Type -AssemblyName WindowsBase
                 <CheckBox Content="Revisar servicios configurados manualmente" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
                 <CheckBox Content="Eliminar archivos temporales" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
                 <CheckBox Content="Revisar Widgets" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
-                <TextBlock Text="Ajustes avanzados   ·   PRECAUCIÓN" Foreground="#86EFAC" FontSize="15" Margin="10,18,5,8"/>
+                <TextBlock Text="AJUSTES AVANZADOS" Foreground="#86EFAC" FontSize="14" FontWeight="Bold" Margin="10,18,5,6"/>
+                <Separator Background="#26352A" Margin="8,0,8,6"/>
                 <CheckBox Content="Revisar aplicaciones en segundo plano" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
                 <CheckBox Content="Revisar almacenamiento reservado" Tag="PC" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
                 <CheckBox Content="Revisar configuración IPv6" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
@@ -102,7 +116,8 @@ Add-Type -AssemblyName WindowsBase
             </ScrollViewer>
             <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
               <StackPanel Background="#111813" Margin="5,0,0,0">
-                <TextBlock Text="Personalizar preferencias" Foreground="#86EFAC" FontFamily="Consolas" FontSize="15" Margin="10,8"/>
+                <TextBlock Text="PERSONALIZACIÓN" Foreground="#86EFAC" FontFamily="Consolas" FontSize="14" FontWeight="Bold" Margin="10,10,10,6"/>
+                <Separator Background="#26352A" Margin="8,0,8,6"/>
                 <CheckBox Content="Activar modo oscuro de Windows (reversible)" Name="TweakDarkMode" IsChecked="False" Tag="PC"/>
                 <CheckBox Content="Mostrar extensiones de archivo (reversible)" Name="TweakFileExtensions" Tag="BOTH"/>
                 <CheckBox Content="Mostrar archivos y carpetas ocultos (reversible)" Name="TweakHiddenFiles" IsChecked="False" Tag="PC"/>
