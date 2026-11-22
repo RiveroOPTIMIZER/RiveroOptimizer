@@ -29,3 +29,8 @@ La interfaz actual es una versión de desarrollo. La pestaña Sophia Script es i
 No se desactivan de forma automática Microsoft Defender, Firewall, UAC, BitLocker, Secure Boot ni Windows Update. Las funciones que modifiquen Windows deben explicar el cambio y conservar una forma segura de restaurarlo.
 
 **No consideres esta versión una compilación final ni ejecutes ajustes que no estén documentados y probados en Windows.**
+
+
+## Estado actual
+
+La vista previa conecta diagnósticos de solo lectura y tres preferencias reversibles del usuario actual: Modo Juego, extensiones de archivo y tema oscuro. Las opciones que aún no tienen implementación permanecen deshabilitadas. El proyecto está limitado a PC de escritorio; la integración completa del diseño WinUtil y las pruebas en Windows siguen pendientes.
