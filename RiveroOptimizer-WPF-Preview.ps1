@@ -150,6 +150,14 @@ Add-Type -AssemblyName WindowsBase
           </Grid>
         </Grid>
       </TabItem>
+      <TabItem Header="Catálogo WinUtil">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <StackPanel x:Name="WinUtilCatalogPanel" Margin="14" Background="#111813">
+            <TextBlock Text="CATÁLOGO DE AJUSTES WINUTIL" Foreground="#86EFAC" FontSize="18" FontWeight="Bold" Margin="10,10,10,4"/>
+            <TextBlock Text="Listado de referencia. Las opciones se habilitarán en Rivero únicamente después de implementar y revisar cada acción." Foreground="#D1D5DB" TextWrapping="Wrap" Margin="10,0,10,12"/>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
       <TabItem Header="Sophia Script">
         <ScrollViewer VerticalScrollBarVisibility="Auto">
           <StackPanel Margin="24" Background="#111813">
@@ -217,6 +225,28 @@ foreach ($requiredPath in @($modulePath, $catalogModulePath, $reversibleModulePa
 . $catalogModulePath
 . $reversibleModulePath
 $catalog = Import-RiveroTweakCatalog -Path $catalogPath
+$referenceCatalogPath = Join-Path $PSScriptRoot 'Catalog/reference/christitus-tweaks.json'
+if (Test-Path -LiteralPath $referenceCatalogPath -PathType Leaf) {
+  $referenceCatalog = Get-Content -LiteralPath $referenceCatalogPath -Raw | ConvertFrom-Json
+  $referencePanel = $window.FindName('WinUtilCatalogPanel')
+  foreach ($categoryGroup in ($referenceCatalog.tweaks | Group-Object -Property category)) {
+    $groupBox = New-Object System.Windows.Controls.GroupBox
+    $groupBox.Header = "$($categoryGroup.Name) ($($categoryGroup.Count))"
+    $groupBox.Margin = '6'
+    $groupBox.Padding = '8'
+    $groupPanel = New-Object System.Windows.Controls.StackPanel
+    foreach ($item in $categoryGroup.Group) {
+      $option = New-Object System.Windows.Controls.CheckBox
+      $option.Content = [string]$item.name
+      $option.IsEnabled = $false
+      $option.Margin = '5,3'
+      $option.ToolTip = [string]$item.status
+      $groupPanel.Children.Add($option) | Out-Null
+    }
+    $groupBox.Content = $groupPanel
+    $referencePanel.Children.Add($groupBox) | Out-Null
+  }
+}
 $existingGameModeBackup = Get-RiveroGameModeBackupPath
 $existingExtensionsBackup = Get-RiveroFileExtensionsBackupPath
 $existingDarkModeBackup = Get-RiveroDarkModeBackupPath
