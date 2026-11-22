@@ -1,5 +1,5 @@
 ﻿# Rivero Optimizer - WPF UI preview
-# Windows PowerShell 5.1+. Includes read-only diagnostics and one reversible Game Mode preference.
+# Windows PowerShell 5.1+. Includes read-only diagnostics and four current-user reversible preferences.
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName PresentationFramework
 Add-Type -AssemblyName PresentationCore
