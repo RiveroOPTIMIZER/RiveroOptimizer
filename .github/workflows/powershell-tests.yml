@@ -25,7 +25,7 @@ jobs:
           Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
           Install-Module Pester -MinimumVersion 5.5.0 -Scope CurrentUser -Force
 
-      - name: Run device profile tests
+      - name: Run Pester tests
         shell: pwsh
         run: |
           Invoke-Pester -Path ./tests -CI
