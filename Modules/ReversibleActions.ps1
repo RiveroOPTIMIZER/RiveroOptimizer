@@ -1,5 +1,5 @@
 # Rivero Optimizer - reversible, allow-listed Windows preferences
-# Windows PowerShell 5.1+. Changes are limited to the current user's Game Bar preferences.
+# Windows PowerShell 5.1+. Allow-listed preferences are limited to the current user.
 
 function Get-RiveroGameModeBackupPath {
     $directory = Join-Path $env:LOCALAPPDATA 'RiveroOptimizer\Backups'
