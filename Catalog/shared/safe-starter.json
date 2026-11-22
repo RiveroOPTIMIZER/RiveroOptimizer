@@ -129,6 +129,20 @@
       "actionType": "reversible",
       "defaultSelected": false,
       "requiresAdmin": false
+    },
+    {
+      "id": "PC-HIDDEN-FILES",
+      "name": "Mostrar archivos y carpetas ocultos",
+      "category": "Personalización",
+      "subcategory": "Explorador de archivos",
+      "description": "Muestra archivos y carpetas ocultos para el usuario actual. No activa la visualización de archivos protegidos del sistema y permite restaurar el valor anterior.",
+      "devices": [
+        "PC"
+      ],
+      "risk": "low",
+      "actionType": "reversible",
+      "defaultSelected": false,
+      "requiresAdmin": false
     }
   ]
 }
