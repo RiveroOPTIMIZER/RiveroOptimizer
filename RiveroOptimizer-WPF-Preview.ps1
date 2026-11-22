@@ -37,9 +37,9 @@ Add-Type -AssemblyName WindowsBase
           <ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <TextBlock Text="◆" Foreground="#22C55E" FontSize="28" VerticalAlignment="Center" Margin="5,0,18,0"/>
-        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-          <Button Content="Ajustes" Width="105" Background="#22C55E"/>
-          <Button Content="Información" Width="125"/>
+        <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center">
+          <TextBlock Text="RIVERO OPTIMIZER" Foreground="#86EFAC" FontSize="17" FontWeight="Bold"/>
+          <TextBlock Text="WINDOWS PERFORMANCE TOOLKIT" Foreground="#9CA3AF" FontSize="9"/>
         </StackPanel>
         <TextBox x:Name="SearchBox" Grid.Column="2" Width="230" Height="27" Margin="10,0"
                  VerticalContentAlignment="Center" Background="#0B0F0C" Foreground="#F3F4F6"
@@ -51,7 +51,7 @@ Add-Type -AssemblyName WindowsBase
     <Border DockPanel.Dock="Bottom" Background="#111813" Padding="8">
       <DockPanel>
         <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-          <TextBlock x:Name="StatusText" Text="Perfil PC · Diagnósticos y guías seguras; Windows no se modifica."
+          <TextBlock x:Name="StatusText" Text="PC · Diagnósticos disponibles y cambios reversibles con confirmación."
                      Foreground="#86EFAC"/>
           <TextBlock Text="Basado en Chris Titus Tech WinUtil · Sophia Script por farag2"
                      Foreground="#9CA3AF" FontSize="10"/>
@@ -68,10 +68,11 @@ Add-Type -AssemblyName WindowsBase
           <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
           <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,4,0,10">
             <TextBlock Text="Selecciones recomendadas:" Foreground="#86EFAC" VerticalAlignment="Center" Margin="4,0,12,0"/>
-            <Button Content="Estándar" Width="180"/><Button Content="Mínimo" Width="180"/>
-            <Button Content="Avanzado" Width="180"/><Button Content="Limpiar" Width="180"/>
-            <Button Content="Seleccionar instalados" Width="190"/>
-            <Button Content="Quitar AppX" Width="150"/>
+            <Button Content="Estándar" Width="150" IsEnabled="False" ToolTip="En desarrollo: los perfiles aún no están conectados."/>
+            <Button Content="Mínimo" Width="150" IsEnabled="False" ToolTip="En desarrollo: los perfiles aún no están conectados."/>
+            <Button Content="Avanzado" Width="150" IsEnabled="False" ToolTip="En desarrollo: los perfiles aún no están conectados."/>
+            <Button Content="Limpiar" Width="150" IsEnabled="False" ToolTip="En desarrollo: esta acción aún no está conectada."/>
+            <Button Content="Seleccionar instalados" Width="180" IsEnabled="False" ToolTip="En desarrollo: esta acción aún no está conectada."/>
           </StackPanel>
           <Grid Grid.Row="1">
             <Grid.ColumnDefinitions><ColumnDefinition Width="1.05*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
@@ -312,7 +313,7 @@ function Set-DeviceVisibility {
       $control.Visibility = if ($deviceMatch -and $searchMatch) { 'Visible' } else { 'Collapsed' }
     }
   }
-  $status.Text = "Perfil PC: ajustes disponibles para ordenador de escritorio. Interfaz en español; sin cambios en Windows."
+  $status.Text = "Perfil PC: ajustes disponibles para ordenador de escritorio. Interfaz en español; los cambios requieren confirmación."
 }
 $search.Add_TextChanged({ Set-DeviceVisibility })
 Set-DeviceVisibility
