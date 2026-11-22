@@ -66,3 +66,11 @@ This audit inspected the pinned source tree and build script. It did not execute
 The pinned upstream XAML's Tweaks tab provides the familiar recommended-selection toolbar, a dynamic `tweakspanel` placeholder, an explanatory note, and a bottom action bar with Run Tweaks / Undo Selected Tweaks. The tweak checkboxes are not hard-coded into that XAML region: the main orchestration layer builds and inserts them from `config/tweaks.json`. Therefore, copying only the XAML region would reproduce the layout shell but not a working tweak catalog or its event wiring.
 
 Rivero's preview has now been clarified independently: the header displays Rivero branding, the redundant nonfunctional header buttons were removed, unfinished profile controls are visibly disabled with tooltips, and the out-of-scope AppX removal button was removed. This is a preview-only UI cleanup; it does not constitute adaptation of the upstream XAML or a completed runtime integration.
+
+## Rivero implementation progress
+
+Rivero's current preview has a small, separate allow-listed action layer rather than executing WinUtil's generic script payloads. The connected reversible user preferences are Windows Game Mode, file-extension visibility, and Windows dark theme. Each stores a backup before changing the current user's registry values and has a dedicated restore handler. Diagnostics and manual guidance remain separate.
+
+The UI explicitly disables placeholder checkboxes. The laptop-only profile files and tests were removed to match the agreed PC-only scope.
+
+These changes have been committed to the development branch. Static repository checks were performed, but the PowerShell/Pester workflow and Windows WPF runtime have not yet been observed passing; do not treat the actions as runtime-tested until CI and a Windows smoke test complete.
