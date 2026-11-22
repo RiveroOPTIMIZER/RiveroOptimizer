@@ -29,6 +29,32 @@ Describe 'Rivero tweak catalog' {
         { Import-RiveroTweakCatalog -Path $tempCatalog } | Should -Throw
     }
 
+    It 'includes the four implemented reversible PC preferences' {
+        $reversible = @($script:Catalog.tweaks | Where-Object { $_.actionType -eq 'reversible' })
+        $reversible.id | Should -Contain 'PC-FILE-EXTENSIONS'
+        $reversible.id | Should -Contain 'PC-GAME-MODE'
+        $reversible.id | Should -Contain 'PC-DARK-MODE'
+        $reversible.id | Should -Contain 'PC-HIDDEN-FILES'
+        foreach ($item in $reversible) {
+            $item.devices | Should -Contain 'PC'
+            $item.defaultSelected | Should -BeFalse
+        }
+    }
+
+    It 'rejects entries without an explicit subcategory or device target' {
+        $copy = Get-Content -LiteralPath $script:CatalogPath -Raw | ConvertFrom-Json
+        $copy.tweaks[0].subcategory = ''
+        $tempCatalog = Join-Path $TestDrive 'missing-subcategory.json'
+        $copy | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $tempCatalog -Encoding UTF8
+        { Import-RiveroTweakCatalog -Path $tempCatalog } | Should -Throw
+
+        $copy = Get-Content -LiteralPath $script:CatalogPath -Raw | ConvertFrom-Json
+        $copy.tweaks[0].devices = @()
+        $tempCatalog = Join-Path $TestDrive 'missing-device.json'
+        $copy | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $tempCatalog -Encoding UTF8
+        { Import-RiveroTweakCatalog -Path $tempCatalog } | Should -Throw
+    }
+
     It 'does not expose executable script payloads in the starter catalog' {
         foreach ($item in $script:Catalog.tweaks) {
             $item.actionType | Should -BeIn @('diagnostic', 'manual', 'reversible')
