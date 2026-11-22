@@ -24,7 +24,7 @@ function Import-RiveroTweakCatalog {
 
     $ids = @{}
     foreach ($tweak in @($catalog.tweaks)) {
-        foreach ($field in @('id', 'name', 'category', 'description', 'devices', 'risk', 'actionType')) {
+        foreach ($field in @('id', 'name', 'category', 'subcategory', 'description', 'devices', 'risk', 'actionType')) {
             if ($null -eq $tweak.$field -or [string]::IsNullOrWhiteSpace([string]$tweak.$field)) {
                 throw "El ajuste '$($tweak.id)' no contiene el campo obligatorio '$field'."
             }
@@ -41,6 +41,13 @@ function Import-RiveroTweakCatalog {
 
         if ($tweak.risk -notin @('low', 'medium', 'high')) {
             throw "Nivel de riesgo no válido en $($tweak.id)."
+        }
+
+        if (@($tweak.devices).Count -eq 0) {
+            throw "El ajuste '$($tweak.id)' debe indicar al menos un dispositivo compatible."
+        }
+        if (@($tweak.devices | Select-Object -Unique).Count -ne @($tweak.devices).Count) {
+            throw "El ajuste '$($tweak.id)' contiene dispositivos duplicados."
         }
 
         foreach ($device in @($tweak.devices)) {
