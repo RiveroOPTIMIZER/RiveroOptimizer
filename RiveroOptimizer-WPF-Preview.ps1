@@ -236,12 +236,29 @@ if (Test-Path -LiteralPath $referenceCatalogPath -PathType Leaf) {
     $groupBox.Padding = '8'
     $groupPanel = New-Object System.Windows.Controls.StackPanel
     foreach ($item in $categoryGroup.Group) {
+      $itemPanel = New-Object System.Windows.Controls.StackPanel
+      $itemPanel.Margin = '4,5,4,8'
       $option = New-Object System.Windows.Controls.CheckBox
       $option.Content = [string]$item.name
       $option.IsEnabled = $false
-      $option.Margin = '5,3'
+      $option.Margin = '2,2,2,3'
+      $option.FontWeight = 'SemiBold'
       $option.ToolTip = [string]$item.status
-      $groupPanel.Children.Add($option) | Out-Null
+      $details = New-Object System.Windows.Controls.TextBlock
+      $details.Text = [string]$item.description
+      $details.Foreground = [Windows.Media.Brushes]::LightGray
+      $details.TextWrapping = 'Wrap'
+      $details.Margin = '22,0,8,2'
+      $details.FontSize = 11
+      $status = New-Object System.Windows.Controls.TextBlock
+      $status.Text = "Estado: $($item.status)"
+      $status.Foreground = if ([string]$item.status -eq 'Disponible en Rivero') { [Windows.Media.Brushes]::LightGreen } else { [Windows.Media.Brushes]::DarkGray }
+      $status.Margin = '22,0,8,0'
+      $status.FontSize = 10
+      $itemPanel.Children.Add($option) | Out-Null
+      $itemPanel.Children.Add($details) | Out-Null
+      $itemPanel.Children.Add($status) | Out-Null
+      $groupPanel.Children.Add($itemPanel) | Out-Null
     }
     $groupBox.Content = $groupPanel
     $referencePanel.Children.Add($groupBox) | Out-Null
