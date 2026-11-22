@@ -57,7 +57,7 @@ A source/build dependency audit is recorded in [DEPENDENCY-AUDIT.md](DEPENDENCY-
 - [x] Audit the pinned upstream build model and runtime dependency inventory; document exclusions for Rivero's narrower scope.
 - [ ] Selectively vendor/adapt only the Tweaks UI dependencies needed by Rivero.
 - [ ] Extract and adapt the upstream Tweaks page XAML to Rivero's black/green theme and Spanish labels.
-- [x] Connect reviewed PC-safe diagnostics, manual guidance, and reversible preferences (Game Mode, file extensions, dark theme) to the UI.
+- [x] Connect reviewed PC-safe diagnostics, manual guidance, and reversible preferences (Game Mode, file extensions, dark theme, hidden-file visibility; Windows runtime verification still pending) to the UI.
 - [x] Remove the retired laptop-only profile, catalog, and tests; the product scope is PC only.
 - [ ] Integrate Sophia Script separately with its own dependency and action review.
 - [ ] Run automated tests and Windows PowerShell 5.1/WPF smoke tests.
