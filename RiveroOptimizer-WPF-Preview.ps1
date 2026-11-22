@@ -281,7 +281,7 @@ $run.Add_Click({
   }
   catch {
     [System.Windows.MessageBox]::Show($_.Exception.Message, 'Rivero Optimizer - Error') | Out-Null
-    $status.Text = 'Ocurrió un error. No se aplicaron cambios.'
+    $status.Text = 'Ocurrió un error. Revisa el resultado: algún cambio anterior podría haberse aplicado. Usa Deshacer para restaurar las copias guardadas.'
   }
 })
 $undo.Add_Click({
