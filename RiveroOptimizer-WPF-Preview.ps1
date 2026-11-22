@@ -351,6 +351,7 @@ $supportedControlNames = @(
   'TweakPowerInfo',
   'TweakStartupAudit',
   'TweakGameMode',
+  'TweakDarkMode',
   'TweakFileExtensions',
   'TweakPcPowerGuide',
   'TweakSecurityGuide'
