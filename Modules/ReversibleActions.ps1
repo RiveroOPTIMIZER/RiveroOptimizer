@@ -371,3 +371,114 @@ function Undo-RiveroDarkModeTweak {
 
     [pscustomobject]@{ Id = 'PC-DARK-MODE'; Status = 'UNDONE'; Details = @('Se restauró el tema anterior de Windows.') }
 }
+
+
+# Hidden files preference: current user only, with exact previous-value backup.
+function Get-RiveroHiddenFilesBackupPath {
+    $directory = Join-Path $env:LOCALAPPDATA 'RiveroOptimizer\Backups'
+    if (-not (Test-Path -LiteralPath $directory)) {
+        New-Item -Path $directory -ItemType Directory -Force | Out-Null
+    }
+    Join-Path $directory 'hidden-files.json'
+}
+
+function Invoke-RiveroHiddenFilesTweak {
+    [CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='Low')]
+    param()
+
+    $registryPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
+    $valueName = 'Hidden'
+    $backupPath = Get-RiveroHiddenFilesBackupPath
+    if (Test-Path -LiteralPath $backupPath) {
+        throw 'Ya existe una copia de seguridad de archivos ocultos. Deshaz el cambio anterior primero.'
+    }
+
+    $keyExists = Test-Path -LiteralPath $registryPath
+    $existed = $false
+    $oldValue = $null
+    if ($keyExists) {
+        $key = Get-ItemProperty -LiteralPath $registryPath -ErrorAction Stop
+        $property = $key.PSObject.Properties[$valueName]
+        if ($null -ne $property) {
+            $existed = $true
+            $oldValue = [int]$property.Value
+        }
+    }
+
+    $backup = [pscustomobject]@{
+        Id = 'PC-HIDDEN-FILES'
+        RegistryPath = $registryPath
+        KeyExisted = $keyExists
+        ValueName = $valueName
+        Existed = $existed
+        Value = $oldValue
+        CreatedUtc = [DateTime]::UtcNow.ToString('o')
+    }
+    $backup | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $backupPath -Encoding UTF8
+
+    try {
+        if ($PSCmdlet.ShouldProcess('Explorador de archivos del usuario actual', 'Mostrar archivos y carpetas ocultos')) {
+            if (-not $keyExists) { New-Item -Path $registryPath -Force | Out-Null }
+            New-ItemProperty -LiteralPath $registryPath -Name $valueName -PropertyType DWord -Value 1 -Force -ErrorAction Stop | Out-Null
+        }
+        else {
+            Remove-Item -LiteralPath $backupPath -Force -ErrorAction SilentlyContinue
+            return [pscustomobject]@{ Id = 'PC-HIDDEN-FILES'; Status = 'WHATIF'; Details = @('No se modificó Windows.') }
+        }
+    }
+    catch {
+        if ($existed) {
+            New-ItemProperty -LiteralPath $registryPath -Name $valueName -PropertyType DWord -Value $oldValue -Force -ErrorAction SilentlyContinue | Out-Null
+        }
+        elseif (Test-Path -LiteralPath $registryPath) {
+            Remove-ItemProperty -LiteralPath $registryPath -Name $valueName -ErrorAction SilentlyContinue
+        }
+        if (-not $keyExists -and (Test-Path -LiteralPath $registryPath)) {
+            $remaining = (Get-ItemProperty -LiteralPath $registryPath).PSObject.Properties | Where-Object { $_.Name -notlike 'PS*' }
+            if (@($remaining).Count -eq 0) { Remove-Item -LiteralPath $registryPath -Force -ErrorAction SilentlyContinue }
+        }
+        Remove-Item -LiteralPath $backupPath -Force -ErrorAction SilentlyContinue
+        throw
+    }
+
+    [pscustomobject]@{
+        Id = 'PC-HIDDEN-FILES'
+        Status = 'APPLIED'
+        Details = @('Ahora se muestran archivos y carpetas ocultos para el usuario actual.', 'No activa la visualización de archivos protegidos del sistema.', 'Se guardó una copia para poder deshacer el cambio.')
+    }
+}
+
+function Undo-RiveroHiddenFilesTweak {
+    [CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='Low')]
+    param()
+
+    $backupPath = Get-RiveroHiddenFilesBackupPath
+    if (-not (Test-Path -LiteralPath $backupPath -PathType Leaf)) {
+        throw 'No existe una copia de seguridad de archivos ocultos.'
+    }
+    $backup = Get-Content -LiteralPath $backupPath -Raw | ConvertFrom-Json -ErrorAction Stop
+    if ($backup.Id -ne 'PC-HIDDEN-FILES' -or
+        $backup.RegistryPath -ne 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -or
+        $backup.ValueName -ne 'Hidden') {
+        throw 'La copia de seguridad de archivos ocultos no coincide con el ajuste permitido.'
+    }
+
+    if ($PSCmdlet.ShouldProcess('Explorador de archivos del usuario actual', 'Restaurar visibilidad anterior de archivos ocultos')) {
+        if ($backup.Existed) {
+            if (-not (Test-Path -LiteralPath $backup.RegistryPath)) {
+                New-Item -Path $backup.RegistryPath -Force | Out-Null
+            }
+            New-ItemProperty -LiteralPath $backup.RegistryPath -Name 'Hidden' -PropertyType DWord -Value ([int]$backup.Value) -Force -ErrorAction Stop | Out-Null
+        }
+        elseif (Test-Path -LiteralPath $backup.RegistryPath) {
+            Remove-ItemProperty -LiteralPath $backup.RegistryPath -Name 'Hidden' -ErrorAction SilentlyContinue
+        }
+        if (-not $backup.KeyExisted -and (Test-Path -LiteralPath $backup.RegistryPath)) {
+            $remaining = (Get-ItemProperty -LiteralPath $backup.RegistryPath).PSObject.Properties | Where-Object { $_.Name -notlike 'PS*' }
+            if (@($remaining).Count -eq 0) { Remove-Item -LiteralPath $backup.RegistryPath -Force }
+        }
+        Remove-Item -LiteralPath $backupPath -Force
+    }
+
+    [pscustomobject]@{ Id = 'PC-HIDDEN-FILES'; Status = 'UNDONE'; Details = @('Se restauró la visibilidad anterior de archivos y carpetas ocultos.') }
+}
