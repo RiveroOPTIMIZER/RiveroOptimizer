@@ -79,25 +79,25 @@ Add-Type -AssemblyName WindowsBase
             <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="0,0,8,0">
               <StackPanel Background="#111813" Margin="0,0,5,0">
                 <TextBlock Text="Ajustes esenciales" Foreground="#86EFAC" FontFamily="Consolas" FontSize="15" Margin="10,8"/>
-                <CheckBox Content="Desactivar historial de actividad" Tag="BOTH"/>
-                <CheckBox Content="Optimización de distribución: revisar configuración" Tag="BOTH"/>
-                <CheckBox Content="Ejecutar limpieza de disco" Tag="BOTH"/>
-                <CheckBox Content="Activar clic derecho para finalizar tareas" Tag="BOTH"/>
-                <CheckBox Content="Desactivar descubrimiento automático de carpetas" Tag="BOTH"/>
+                <CheckBox Content="Desactivar historial de actividad" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
+                <CheckBox Content="Optimización de distribución: revisar configuración" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
+                <CheckBox Content="Ejecutar limpieza de disco" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
+                <CheckBox Content="Activar clic derecho para finalizar tareas" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
+                <CheckBox Content="Desactivar descubrimiento automático de carpetas" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
                 <CheckBox Content="Analizar programas de inicio" Name="TweakStartupAudit" Tag="BOTH"/>
                 <CheckBox Content="Información de Windows" Name="TweakOsInfo" Tag="BOTH" IsChecked="True"/>
                 <CheckBox Content="Información del hardware" Name="TweakHardwareInfo" Tag="BOTH" IsChecked="True"/>
                 <CheckBox Content="Estado de energía" Name="TweakPowerInfo" Tag="BOTH" IsChecked="True"/>
                 <CheckBox Content="Crear punto de restauración" Tag="BOTH" IsEnabled="False"/>
-                <CheckBox Content="Revisar servicios configurados manualmente" Tag="BOTH"/>
-                <CheckBox Content="Eliminar archivos temporales" Tag="BOTH"/>
-                <CheckBox Content="Revisar Widgets" Tag="BOTH"/>
+                <CheckBox Content="Revisar servicios configurados manualmente" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
+                <CheckBox Content="Eliminar archivos temporales" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
+                <CheckBox Content="Revisar Widgets" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
                 <TextBlock Text="Ajustes avanzados   ·   PRECAUCIÓN" Foreground="#86EFAC" FontSize="15" Margin="10,18,5,8"/>
-                <CheckBox Content="Revisar aplicaciones en segundo plano" Tag="BOTH"/>
-                <CheckBox Content="Revisar almacenamiento reservado" Tag="PC"/>
-                <CheckBox Content="Revisar configuración IPv6" Tag="BOTH"/>
-                <CheckBox Content="Revisar componentes opcionales de Windows" Tag="BOTH"/>
-                <CheckBox Content="Mostrar información de privacidad" Tag="BOTH"/>
+                <CheckBox Content="Revisar aplicaciones en segundo plano" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
+                <CheckBox Content="Revisar almacenamiento reservado" Tag="PC" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
+                <CheckBox Content="Revisar configuración IPv6" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
+                <CheckBox Content="Revisar componentes opcionales de Windows" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
+                <CheckBox Content="Mostrar información de privacidad" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
               </StackPanel>
             </ScrollViewer>
             <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
@@ -105,17 +105,17 @@ Add-Type -AssemblyName WindowsBase
                 <TextBlock Text="Personalizar preferencias" Foreground="#86EFAC" FontFamily="Consolas" FontSize="15" Margin="10,8"/>
                 <CheckBox Content="Activar modo oscuro de Windows (reversible)" Name="TweakDarkMode" IsChecked="False" Tag="PC"/>
                 <CheckBox Content="Mostrar extensiones de archivo (reversible)" Name="TweakFileExtensions" Tag="BOTH"/>
-                <CheckBox Content="Mostrar archivos ocultos" IsChecked="True" Tag="BOTH"/>
+                <CheckBox Content="Mostrar archivos y carpetas ocultos (reversible)" Name="TweakHiddenFiles" IsChecked="False" Tag="PC"/>
                 <CheckBox Content="Activar Modo Juego de Windows (reversible)" Name="TweakGameMode" IsChecked="False" Tag="BOTH"/>
-                <CheckBox Content="Revisar plan de energía de escritorio" Tag="PC"/>
-                <CheckBox Content="Revisar inicio rápido y estado de energía" Tag="PC"/>
-                <CheckBox Content="Desactivar sugerencias de pantalla de bloqueo" Tag="BOTH"/>
-                <CheckBox Content="Mostrar pantalla de inicio detallada" Tag="BOTH"/>
-                <CheckBox Content="Aceleración del mouse" Tag="BOTH"/>
-                <CheckBox Content="Bloqueo numérico al iniciar" Tag="BOTH"/>
+                <CheckBox Content="Revisar plan de energía de escritorio" Tag="PC" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
+                <CheckBox Content="Revisar inicio rápido y estado de energía" Tag="PC" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
+                <CheckBox Content="Desactivar sugerencias de pantalla de bloqueo" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
+                <CheckBox Content="Mostrar pantalla de inicio detallada" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
+                <CheckBox Content="Aceleración del mouse" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
+                <CheckBox Content="Bloqueo numérico al iniciar" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
                 <CheckBox Content="Revisar plan de energía del PC" Name="TweakPcPowerGuide" Tag="PC"/>
                 <CheckBox Content="Conservar protecciones de Windows" Name="TweakSecurityGuide" Tag="BOTH" IsChecked="True"/>
-                <CheckBox Content="Centrar iconos de la barra de tareas" Tag="BOTH"/>
+                <CheckBox Content="Centrar iconos de la barra de tareas" Tag="BOTH" IsEnabled="False" ToolTip="En desarrollo: esta opción todavía no ejecuta ninguna acción."/>
                 <CheckBox Content="Mantener protecciones de Windows" IsChecked="True" IsEnabled="False" Tag="BOTH"/>
               </StackPanel>
             </ScrollViewer>
@@ -192,7 +192,8 @@ $catalog = Import-RiveroTweakCatalog -Path $catalogPath
 $existingGameModeBackup = Get-RiveroGameModeBackupPath
 $existingExtensionsBackup = Get-RiveroFileExtensionsBackupPath
 $existingDarkModeBackup = Get-RiveroDarkModeBackupPath
-$undo.IsEnabled = (Test-Path -LiteralPath $existingGameModeBackup -PathType Leaf) -or (Test-Path -LiteralPath $existingExtensionsBackup -PathType Leaf) -or (Test-Path -LiteralPath $existingDarkModeBackup -PathType Leaf)
+$existingHiddenFilesBackup = Get-RiveroHiddenFilesBackupPath
+$undo.IsEnabled = (Test-Path -LiteralPath $existingGameModeBackup -PathType Leaf) -or (Test-Path -LiteralPath $existingExtensionsBackup -PathType Leaf) -or (Test-Path -LiteralPath $existingDarkModeBackup -PathType Leaf) -or (Test-Path -LiteralPath $existingHiddenFilesBackup -PathType Leaf)
 $undo.Content = if ($undo.IsEnabled) { 'Deshacer cambios' } else { 'Sin cambios para deshacer' }
 $run.Add_Click({
   try {
@@ -221,6 +222,25 @@ $run.Add_Click({
         $output.Add("[$($extensionsResult.Status)] Mostrar extensiones de archivo")
         foreach ($line in $extensionsResult.Details) { $output.Add("  • $line") }
         $extensionsControl.IsChecked = $false
+        $undo.IsEnabled = $true
+        $undo.Content = 'Deshacer cambios'
+      }
+    }
+    $hiddenFilesControl = $window.FindName('TweakHiddenFiles')
+    if ($hiddenFilesControl.IsChecked) {
+      $answer = [System.Windows.MessageBox]::Show(
+        'Se mostrarán archivos y carpetas ocultos para tu usuario. No se mostrarán archivos protegidos del sistema. Rivero guardará el valor anterior para poder deshacerlo. ¿Continuar?',
+        'Confirmar personalización',
+        [System.Windows.MessageBoxButton]::YesNo,
+        [System.Windows.MessageBoxImage]::Question
+      )
+      if ($answer -eq [System.Windows.MessageBoxResult]::Yes) {
+        $hiddenCatalogItem = Get-RiveroTweakById -Id 'PC-HIDDEN-FILES' -Catalog $catalog
+        if ($null -eq $hiddenCatalogItem -or $hiddenCatalogItem.actionType -ne 'reversible') { throw 'La acción de archivos ocultos no está validada en el catálogo.' }
+        $hiddenResult = Invoke-RiveroHiddenFilesTweak -Confirm:$false
+        $output.Add("[$($hiddenResult.Status)] Mostrar archivos y carpetas ocultos")
+        foreach ($line in $hiddenResult.Details) { $output.Add("  • $line") }
+        $hiddenFilesControl.IsChecked = $false
         $undo.IsEnabled = $true
         $undo.Content = 'Deshacer cambios'
       }
@@ -276,7 +296,7 @@ $run.Add_Click({
     }
     if ($output.Count -eq 0) { $output.Add('Selecciona al menos un diagnóstico o una guía disponible para este dispositivo.') }
     [System.Windows.MessageBox]::Show(($output -join [Environment]::NewLine), 'Rivero Optimizer') | Out-Null
-    $hasReversibleBackup = (Test-Path -LiteralPath (Get-RiveroGameModeBackupPath)) -or (Test-Path -LiteralPath (Get-RiveroFileExtensionsBackupPath)) -or (Test-Path -LiteralPath (Get-RiveroDarkModeBackupPath))
+    $hasReversibleBackup = (Test-Path -LiteralPath (Get-RiveroGameModeBackupPath)) -or (Test-Path -LiteralPath (Get-RiveroFileExtensionsBackupPath)) -or (Test-Path -LiteralPath (Get-RiveroDarkModeBackupPath)) -or (Test-Path -LiteralPath (Get-RiveroHiddenFilesBackupPath))
     $status.Text = if ($hasReversibleBackup) { 'Listo: cambios reversibles guardados para poder deshacer.' } else { 'Listo: diagnósticos y guías completados.' }
   }
   catch {
@@ -289,16 +309,22 @@ $undo.Add_Click({
     $gameBackupPath = Get-RiveroGameModeBackupPath
     $extensionsBackupPath = Get-RiveroFileExtensionsBackupPath
     $darkModeBackupPath = Get-RiveroDarkModeBackupPath
+    $hiddenFilesBackupPath = Get-RiveroHiddenFilesBackupPath
     $hasGameBackup = Test-Path -LiteralPath $gameBackupPath -PathType Leaf
     $hasExtensionsBackup = Test-Path -LiteralPath $extensionsBackupPath -PathType Leaf
     $hasDarkModeBackup = Test-Path -LiteralPath $darkModeBackupPath -PathType Leaf
-    if (-not ($hasGameBackup -or $hasExtensionsBackup -or $hasDarkModeBackup)) {
+    $hasHiddenFilesBackup = Test-Path -LiteralPath $hiddenFilesBackupPath -PathType Leaf
+    if (-not ($hasGameBackup -or $hasExtensionsBackup -or $hasDarkModeBackup -or $hasHiddenFilesBackup)) {
       [System.Windows.MessageBox]::Show('No hay cambios reversibles de Rivero para deshacer.', 'Rivero Optimizer') | Out-Null
       return
     }
-    $answer = [System.Windows.MessageBox]::Show('Se restaurarán los ajustes reversibles que Rivero haya aplicado (Modo Juego, extensiones y/o modo oscuro). ¿Continuar?', 'Confirmar deshacer', [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
+    $answer = [System.Windows.MessageBox]::Show('Se restaurarán los ajustes reversibles que Rivero haya aplicado (Modo Juego, extensiones, archivos ocultos y/o modo oscuro). ¿Continuar?', 'Confirmar deshacer', [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
     if ($answer -eq [System.Windows.MessageBoxResult]::Yes) {
       $undoDetails = New-Object System.Collections.Generic.List[string]
+      if ($hasHiddenFilesBackup) {
+        $result = Undo-RiveroHiddenFilesTweak -Confirm:$false
+        foreach ($line in $result.Details) { $undoDetails.Add($line) }
+      }
       if ($hasDarkModeBackup) {
         $result = Undo-RiveroDarkModeTweak -Confirm:$false
         foreach ($line in $result.Details) { $undoDetails.Add($line) }
