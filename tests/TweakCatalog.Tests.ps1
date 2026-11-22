@@ -17,8 +17,16 @@ Describe 'Rivero tweak catalog' {
         $items = @(Get-RiveroAvailableTweaks -Mode PC -Catalog $script:Catalog)
         ($items.id -contains 'PC-POWER-GUIDE') | Should -BeTrue
         ($items.id -contains 'SYS-OS-INFO') | Should -BeTrue
-        ($items.id -contains 'LAPTOP-BATTERY-GUIDE') | Should -BeFalse
         (@($script:Catalog.tweaks | Where-Object { $_.devices -contains 'LAPTOP' }).Count) | Should -Be 0
+        { Get-RiveroAvailableTweaks -Mode LAPTOP -Catalog $script:Catalog } | Should -Throw
+    }
+
+    It 'rejects laptop-targeted catalog entries' {
+        $copy = Get-Content -LiteralPath $script:CatalogPath -Raw | ConvertFrom-Json
+        $copy.tweaks[0].devices = @('LAPTOP')
+        $tempCatalog = Join-Path $TestDrive 'laptop-catalog.json'
+        $copy | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $tempCatalog -Encoding UTF8
+        { Import-RiveroTweakCatalog -Path $tempCatalog } | Should -Throw
     }
 
     It 'does not expose executable script payloads in the starter catalog' {
