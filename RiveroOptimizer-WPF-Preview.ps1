@@ -83,22 +83,19 @@ Add-Type -AssemblyName WindowsBase
               <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <TextBlock Text="AJUSTES DEL SISTEMA" Foreground="#86EFAC" FontWeight="Bold"
                            VerticalAlignment="Center" Margin="3,0,12,0"/>
-                <TextBlock Text="Perfil:" Foreground="#9CA3AF" VerticalAlignment="Center" Margin="8,0,5,0"/>
-                <ComboBox x:Name="CategoryBox" Width="155" Height="26" SelectedIndex="0"
-                          Background="#17221A" Foreground="#111813">
-                  <ComboBoxItem Content="Standard"/>
-                  <ComboBoxItem Content="Minimal"/>
-                  <ComboBoxItem Content="Advanced"/>
-                  <ComboBoxItem Content="Desktop"/>
-                  <ComboBoxItem Content="Privacy"/>
-                  <ComboBoxItem Content="Performance"/>
-                  <ComboBoxItem Content="Gaming"/>
-                  <ComboBoxItem Content="Network"/>
-                  <ComboBoxItem Content="Power"/>
-                  <ComboBoxItem Content="Windows"/>
-                </ComboBox>
-                <TextBlock Text="  Busca y selecciona opciones habilitadas." Foreground="#9CA3AF"
-                           VerticalAlignment="Center" FontSize="12"/>
+                <TextBlock Text="  " Foreground="#9CA3AF" VerticalAlignment="Center"/>
+                <WrapPanel x:Name="CategoryPanel" VerticalAlignment="Center">
+                  <RadioButton Content="Standard" GroupName="RiveroCategory" IsChecked="True" Margin="5,3" Foreground="#86EFAC"/>
+                  <RadioButton Content="Minimal" GroupName="RiveroCategory" Margin="5,3" Foreground="#86EFAC"/>
+                  <RadioButton Content="Advanced" GroupName="RiveroCategory" Margin="5,3" Foreground="#86EFAC"/>
+                  <RadioButton Content="Desktop" GroupName="RiveroCategory" Margin="5,3" Foreground="#86EFAC"/>
+                  <RadioButton Content="Privacy" GroupName="RiveroCategory" Margin="5,3" Foreground="#86EFAC"/>
+                  <RadioButton Content="Performance" GroupName="RiveroCategory" Margin="5,3" Foreground="#86EFAC"/>
+                  <RadioButton Content="Gaming" GroupName="RiveroCategory" Margin="5,3" Foreground="#86EFAC"/>
+                  <RadioButton Content="Network" GroupName="RiveroCategory" Margin="5,3" Foreground="#86EFAC"/>
+                  <RadioButton Content="Power" GroupName="RiveroCategory" Margin="5,3" Foreground="#86EFAC"/>
+                  <RadioButton Content="Windows" GroupName="RiveroCategory" Margin="5,3" Foreground="#86EFAC"/>
+                </WrapPanel>
               </StackPanel>
             </DockPanel>
           </Border>
@@ -386,7 +383,14 @@ function Get-VisualChildren([System.Windows.DependencyObject]$Parent) {
     Get-VisualChildren $child
   }
 }
-$categoryBox = $window.FindName('CategoryBox')
+$categoryPanel = $window.FindName('CategoryPanel')
+function Get-RiveroSelectedCategory {
+  $selectedRadio = Get-VisualChildren $categoryPanel | Where-Object {
+    $_ -is [System.Windows.Controls.RadioButton] -and $_.IsChecked
+  } | Select-Object -First 1
+  if ($selectedRadio) { return [string]$selectedRadio.Content }
+  return 'Standard'
+}
 function Get-RiveroUiCategory([System.Windows.Controls.CheckBox]$Control) {
   $name = [string]$Control.Name
   $label = [string]$Control.Content
@@ -401,7 +405,7 @@ function Get-RiveroUiCategory([System.Windows.Controls.CheckBox]$Control) {
 }
 function Set-DeviceVisibility {
   $selected = 'PC'
-  $profile = [string]$categoryBox.SelectedItem.Content
+  $profile = Get-RiveroSelectedCategory
   foreach ($control in (Get-VisualChildren $window)) {
     if ($control -is [System.Windows.Controls.CheckBox] -and $control.Tag) {
       $target = [string]$control.Tag
@@ -421,7 +425,7 @@ function Set-DeviceVisibility {
   $status.Text = "Perfil PC · $profile · Las opciones en desarrollo están deshabilitadas."
 }
 $search.Add_TextChanged({ Set-DeviceVisibility })
-$categoryBox.Add_SelectionChanged({ Set-DeviceVisibility })
+foreach ($radio in (Get-VisualChildren $categoryPanel | Where-Object { $_ -is [System.Windows.Controls.RadioButton] })) { $radio.Add_Checked({ Set-DeviceVisibility }) }
 Set-DeviceVisibility
 # Solo se habilitan controles que tienen una acción real y validada en el catálogo.
 $supportedControlNames = @(
