@@ -30,3 +30,16 @@ Describe 'Rivero reversible action allow-list' {
         (Get-Command Undo-RiveroDarkModeTweak -ErrorAction Stop).Name | Should -Be 'Undo-RiveroDarkModeTweak'
     }
 }
+
+
+Describe 'Rivero hidden files preference' {
+    It 'refuses to restore hidden files without a backup' {
+        Mock Get-RiveroHiddenFilesBackupPath { Join-Path $TestDrive 'missing-hidden-files.json' }
+        { Undo-RiveroHiddenFilesTweak -Confirm:$false } | Should -Throw
+    }
+
+    It 'exposes dedicated allow-listed apply and restore functions' {
+        (Get-Command Invoke-RiveroHiddenFilesTweak -ErrorAction Stop).Name | Should -Be 'Invoke-RiveroHiddenFilesTweak'
+        (Get-Command Undo-RiveroHiddenFilesTweak -ErrorAction Stop).Name | Should -Be 'Undo-RiveroHiddenFilesTweak'
+    }
+}
