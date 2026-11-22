@@ -20,7 +20,7 @@ Describe 'Rivero WPF preview integrity' {
         foreach ($name in @('RunButton', 'UndoButton', 'StatusText', 'SearchBox',
             'TweakOsInfo', 'TweakHardwareInfo', 'TweakPowerInfo', 'TweakStartupAudit',
             'TweakPcPowerGuide', 'TweakSecurityGuide', 'TweakFileExtensions',
-            'TweakGameMode', 'TweakDarkMode')) {
+            'TweakGameMode', 'TweakDarkMode', 'TweakHiddenFiles')) {
             $names | Should -Contain $name
         }
     }
@@ -29,6 +29,8 @@ Describe 'Rivero WPF preview integrity' {
         $script:UiSource | Should -Match 'Modules/ReversibleActions\.ps1'
         $script:UiSource | Should -Match 'Invoke-RiveroDarkModeTweak'
         $script:UiSource | Should -Match 'Undo-RiveroDarkModeTweak'
+        $script:UiSource | Should -Match 'Invoke-RiveroHiddenFilesTweak'
+        $script:UiSource | Should -Match 'Undo-RiveroHiddenFilesTweak'
         $script:UiSource | Should -Match 'Invoke-RiveroFileExtensionsTweak'
         $script:UiSource | Should -Match 'Undo-RiveroFileExtensionsTweak'
         $script:UiSource | Should -Match 'Invoke-RiveroReversibleTweak'
@@ -36,7 +38,12 @@ Describe 'Rivero WPF preview integrity' {
     }
 
     It 'disables unfinished controls instead of presenting them as working' {
-        $script:UiSource | Should -Match 'En desarrollo: todavía no ejecuta ninguna acción'
+        [xml]$document = $script:XamlMatch.Groups[1].Value
+        $unnamed = @($document.SelectNodes("//*[local-name()='CheckBox' and not(@Name)]"))
+        $unnamed.Count | Should -BeGreaterThan 0
+        foreach ($control in $unnamed) {
+            $control.GetAttribute('IsEnabled') | Should -Be 'False'
+        }
         $script:UiSource | Should -Match "'TweakDarkMode'"
     }
 
